@@ -3,7 +3,7 @@ p - PAUS
 hiireklikk - tulistamine
 ASDW - liikumine
 
-Autorid: Kaspar Kliimask, Madis Kariler
+Autorid: Kaspar Kliimask, Madis Kariler eheh
 """
 import pygame, sys, random, math, time, os
 
@@ -17,6 +17,9 @@ from variables import *
 
 class Game:
     def __init__(self, WIDTH, HEIGHT):
+        """
+        peaklass
+        """
         global levelTime
 
         pygame.init()
@@ -37,18 +40,20 @@ class Game:
         """
         self.blokityyp = {
             "tavaline" : {
-                "maxKiirus" : 1,
+                "maxKiirus" : 0.6,
                 "maxW" : 50,
                 "maxH" : 50,
                 "lykkab" : 0,
-                "dmg" : 0
+                "dmg" : 0,
+                "color" : (0,200,0)
             },
             "lykkaja" : {
-                "maxKiirus" : 1,
+                "maxKiirus" : 0.4,
                 "maxW" : 10,
-                "maxH" : 40,
-                "lykkab" : 100,
-                "dmg" : 2
+                "maxH" : 60,
+                "lykkab" : 200,
+                "dmg" : 2,
+                "color" : (125,120,50)
             }
 
 
@@ -71,19 +76,24 @@ class Game:
         for blokk in self.blokid:
             blokk.update_logic()
     
-            if (collision(blokk.rect, self.mees.rect)): #kokkuporge
+            if (collision(blokk.rect, self.mees.rect)): #kokkuporge MEHE JA BLOKI VAHEL
                 if(blokk.dx < 0): # blokk liigub vasakule
                     if(self.mees.rect.x <= blokk.rect.x):
                         self.mees.rect.x = blokk.rect.x-self.mees.rect.w # lykkame kaasa
+                        self.mees.rect.x -= blokk.lykkab
                     else:
                         self.mees.rect.x += 1 # lykkame tagasi
+                        self.mees.rect.x += blokk.lykkab
                 elif(blokk.dx > 0): # blokk liigub paremale
                     if(self.mees.rect.x >= blokk.rect.x):
                         self.mees.rect.x = blokk.rect.x+blokk.rect.w
+                        self.mees.rect.x += blokk.lykkab
                     else:
                         self.mees.rect.x -= 1
+                        self.mees.rect.x -= blokk.lykkab
+
         self.check_bullets()
-                    
+
         for enemy in game.pahad:
             enemy.attack(self.mees) # tyre
 
@@ -127,9 +137,13 @@ class Game:
         
     def create_bloks(self,count): # loob uusi blokke
         for i in range(count):
-            temp = Blokk(self.blokityyp["tavaline"])
+            if(random.randint(1,3) > 1):
+                temp = Blokk(self.blokityyp["tavaline"])
+            else:
+                temp = Blokk(self.blokityyp["lykkaja"])
+
             self.blokid.append(temp)
-        
+
     def create_enemies(self,count): # loob uusi vastaseid
         for i in range(count):
             temp = PahaPoiss(game.level,1,20)
