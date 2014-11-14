@@ -9,11 +9,10 @@ class Blokk(object): # tyypiline takistus
         self.maxH = tyyp["maxH"]
         self.lykkab = tyyp["lykkab"]
         self.dmg = tyyp["dmg"]
-
+        self.color = tyyp["color"] # v2rv
         self.rect = Rect(0,0,0,0) # loome ymbrise
         self.new_crds()
         self.new_shape()
-        self.color = (0,200,0) # v2rv
         self.dy = 0 # speed
 
     def update_logic(self):
@@ -33,4 +32,5 @@ class Blokk(object): # tyypiline takistus
         self.rect.x = crd_out_x(200) # votame suvad koordinaadid
         self.rect.y = crd_in_y()
         if(self.rect.x > 0):
-            self.dx = -self.dx
+            self.dx = -self.dx # kui kast tuleb paremalt poolt, muudame suunda
+            self.lykkab = -self.lykkab # lykkab vasakule mitte paremale
