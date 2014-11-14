@@ -33,4 +33,4 @@ class Blokk(object): # tyypiline takistus
         self.rect.y = crd_in_y()
         if(self.rect.x > 0):
             self.dx = -self.dx # kui kast tuleb paremalt poolt, muudame suunda
-            self.lykkab = -self.lykkab # lykkab vasakule mitte paremale
+            #self.lykkab = -self.lykkab # lykkab vasakule mitte paremale

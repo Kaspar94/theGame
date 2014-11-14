@@ -48,7 +48,7 @@ class Game:
                 "color" : (0,200,0)
             },
             "lykkaja" : {
-                "maxKiirus" : 0.8,
+                "maxKiirus" : 0.4,
                 "maxW" : 10,
                 "maxH" : 60,
                 "lykkab" : 200,
@@ -80,17 +80,20 @@ class Game:
                 if(blokk.dx < 0): # blokk liigub vasakule
                     if(self.mees.rect.x <= blokk.rect.x):
                         self.mees.rect.x = blokk.rect.x-self.mees.rect.w # lykkame kaasa
+                        self.mees.rect.x -= blokk.lykkab
                     else:
                         self.mees.rect.x += 1 # lykkame tagasi
+                        self.mees.rect.x += blokk.lykkab
                 elif(blokk.dx > 0): # blokk liigub paremale
                     if(self.mees.rect.x >= blokk.rect.x):
                         self.mees.rect.x = blokk.rect.x+blokk.rect.w
+                        self.mees.rect.x += blokk.lykkab
                     else:
                         self.mees.rect.x -= 1
+                        self.mees.rect.x -= blokk.lykkab
 
-                self.mees.rect.x += blokk.lykkab
         self.check_bullets()
-                    
+
         for enemy in game.pahad:
             enemy.attack(self.mees) # tyre
 
