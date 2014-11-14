@@ -3,7 +3,7 @@ p - PAUS
 hiireklikk - tulistamine
 ASDW - liikumine
 
-Autorid: Kaspar Kliimask, Madis Kariler
+Autorid: Kaspar Kliimask, Madis Kariler eheh
 """
 import pygame, sys, random, math, time, os
 
