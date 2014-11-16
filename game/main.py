@@ -92,7 +92,7 @@ class Game:
                         self.mees.rect.x -= 1
                         self.mees.rect.x -= blokk.lykkab
 
-        self.check_bullets()
+        self.check_bullets() # uuendab kuulidega seotud loogikat
 
         for enemy in game.pahad:
             enemy.attack(self.mees) # tyre
@@ -137,7 +137,7 @@ class Game:
         
     def create_bloks(self,count): # loob uusi blokke
         for i in range(count):
-            if(random.randint(1,3) > 1):
+            if(random.randint(1,3) > 1): # yks kolmele et tuleb ull blokk
                 temp = Blokk(self.blokityyp["tavaline"])
             else:
                 temp = Blokk(self.blokityyp["lykkaja"])
