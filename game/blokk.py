@@ -25,8 +25,8 @@ class Blokk(object): # tyypiline takistus
         pygame.draw.rect(scr, self.color ,self.rect.get())
 
     def new_shape(self): # loob uue kuju blokile
-        self.rect.w = random.randint(5,30)
-        self.rect.h = random.randint(5,70)
+        self.rect.w = random.randint(5,self.maxW)
+        self.rect.h = random.randint(5,self.maxH)
 
     def new_crds(self):
         self.rect.x = crd_out_x(200) # votame suvad koordinaadid
