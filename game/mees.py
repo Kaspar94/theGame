@@ -19,32 +19,43 @@ class Mees(object): # peamees
         self.font=pygame.font.Font(None,30)
 
         #voimalikud relvad
-        self.relvad = { "handgun" :
-                        { "dmg" : 1, # palju relv dmg teeb
-                          "speed" : 0.5, # kui kiirelt kuul lendab
-                          "hoida" : 0, # kas automaat
-                          "bullets" : 12, # palju kuule
-                          "pide" : 12, # palju pide hoiab
-                          "kokku" : 48, # palju kokku kuule
-                          "korraga" : 1
-                        },
-                        "machinegun" :
-                        { "dmg" : 1,
-                          "speed" : 2,
-                          "hoida" : 1,
-                          "bullets" : 50,
-                          "pide" : 50,
-                          "kokku" : 300,
-                          "korraga" : 1,
-                          "vahe" : 0.2 # kuulide laskmis vahe ajaliselt automaatselt
-                        }
-                       } 
+        self.relvad = {
+            "handgun" :
+                { "dmg" : 1, # palju relv dmg teeb
+                  "speed" : 0.5, # kui kiirelt kuul lendab
+                  "hoida" : 0, # kas automaat
+                  "bullets" : 12, # palju kuule
+                  "pide" : 12, # palju pide hoiab
+                  "kokku" : 48, # palju kokku kuule
+                  "korraga" : 1
+                },
+            "machinegun" :
+                { "dmg" : 1,
+                  "speed" : 2,
+                  "hoida" : 1,
+                  "bullets" : 50,
+                  "pide" : 50,
+                  "kokku" : 300,
+                  "korraga" : 1,
+                  "vahe" : 0.2 # kuulide laskmis vahe ajaliselt automaatselt
+                },
+            "pump" :
+                { "dmg" : 1,
+                  "speed" : 1.5,
+                  "hoida" : 0,
+                  "bullets" : 8,
+                  "pide" : 8,
+                  "kokku" : 72,
+                  "korraga" : 1,
+                  "vahe" : 0.2 # kuulide laskmis vahe ajaliselt automaatselt(kui hoida == 1)
+               }
+        }
         
         self.relv = "handgun" # mis relv hetkel
-        self.relvakogu = {
+        self.relvakogu = { # 1 kui olemas, 0 kui mitte
             "handgun" : 1,
             "machinegun" : 1,
-            "pump" : 0
+            "pump" : 1
         }
 
         self.shootTimer = Timer(1)
@@ -84,6 +95,11 @@ class Mees(object): # peamees
 
         for i in range(self.relvad[self.relv]["korraga"]):      # laseme kuulid valja     
             temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
+            if(self.relv == "pump"): # 2 kuuli lisaks
+                temp2 = Bullet(start[0],start[1],end[0]-50,end[1],self.relvad[self.relv])
+                temp3 = Bullet(start[0],start[1],end[0]+50,end[1],self.relvad[self.relv])
+                self.bullets.append(temp2)
+                self.bullets.append(temp3)
             self.bullets.append(temp)
         
         self.relvad[self.relv]["bullets"] -= self.relvad[self.relv]["korraga"]

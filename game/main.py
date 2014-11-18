@@ -193,7 +193,7 @@ game.mees = Mees() # peavend
 
 """ level 1 """
 game.create_bloks(10) # viis vastast
-game.create_enemies(1) # kaks vastast, viisakas
+game.create_enemies(20) # kaks vastast, viisakas
 """         """
 
 
