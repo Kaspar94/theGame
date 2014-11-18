@@ -1,5 +1,5 @@
 import pygame, random
-from object_functions import Rect
+from object_functions import *
 from variables import *
 from bullet import Bullet
 
@@ -61,7 +61,7 @@ class Mees(object): # peamees
     def shoot(self,start,end,mouseButton):
         if(self.relvad[self.relv]["bullets"] <= 0): # pole kuule?
             return
-        
+
         for i in range(self.relvad[self.relv]["korraga"]):      # laseme kuulid valja     
             temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
             self.bullets.append(temp)
@@ -70,7 +70,7 @@ class Mees(object): # peamees
 
         if(self.relvad[self.relv]["bullets"] <= 0):
             if(self.relvad[self.relv]["kokku"] > 0): #vaatame kas varupidemes
-                if(self.relvad[self.relv]["kokku"] <= 12):
+                if(self.relvad[self.relv]["kokku"] <= self.relvad[self.relv]["pide"]): # viimane pide
                     self.relvad[self.relv]["bullets"] += self.relvad[self.relv]["kokku"]
                     self.relvad[self.relv]["kokku"] = 0
                 else:
@@ -78,7 +78,60 @@ class Mees(object): # peamees
                     self.relvad[self.relv]["kokku"] -= self.relvad[self.relv]["pide"]
 
     def getRekt(self,dmg):
-        self.lives -= dmg
-        if(self.lives == 0):
+
+        self.lives -= dmg # vahendame elusi dmg vorra
+
+        if(self.lives == 0): # kas oleme surnud?
+            # ... siia midagi valja moelda
             print ("gameover")
             self.speed = 0
+
+    def check_collision(self,blokk): # uurib kokkupuudet mehe ja bloki vahel
+
+        if(collision(blokk.rect, self.rect)): #kokkuporge MEHE JA BLOKI VAHEL
+
+            if(blokk.suund == "hor"): # blokk liigub horisontaalselt
+                # tulles alt voi ylevalt lykkame tagasi
+                if(self.rect.x+self.rect.w<blokk.rect.x+blokk.rect.w and (self.rect.y < blokk.rect.y)):
+                    self.rect.y = blokk.rect.y-self.rect.h
+                    return
+                elif(self.rect.x+self.rect.w<blokk.rect.x+blokk.rect.w and(self.rect.y+self.rect.h>blokk.rect.y+blokk.rect.h)):
+                    self.rect.y = blokk.rect.y+blokk.rect.h
+                    return
+
+                if(blokk.dx > 0): # blokk liigub paremale
+                    if(self.rect.x+self.rect.w>blokk.rect.x+blokk.rect.w):
+                        self.rect.x = blokk.rect.x+blokk.rect.w
+                        self.rect.x += blokk.lykkab
+                    else:
+                        self.rect.x = blokk.rect.x-self.rect.w
+                elif(blokk.dx < 0): # blokk liigub vasakule
+                    if(self.rect.x<blokk.rect.x):
+                        self.rect.x =  blokk.rect.x-self.rect.w
+                        self.rect.x -= blokk.lykkab
+                    else:
+                        self.rect.x = blokk.rect.x+blokk.rect.w
+
+            elif(blokk.suund == "ver"): # blokk liigub vertikaalselt
+                # tulles alt voi ylevalt lykkame tagasi
+                if(self.rect.y+self.rect.h<blokk.rect.y+blokk.rect.h and (self.rect.x < blokk.rect.x)):
+                    self.rect.x = blokk.rect.x-self.rect.w
+                    return
+                elif(self.rect.y+self.rect.h<blokk.rect.y+blokk.rect.h and self.rect.x+self.rect.w>blokk.rect.x+blokk.rect.w):
+                    self.rect.x = blokk.rect.x+blokk.rect.w
+                    return
+
+                if(blokk.dy > 0): # blokk liigub alla
+                    if(self.rect.y+self.rect.h>blokk.rect.y+blokk.rect.h):
+                        self.rect.y = blokk.rect.y+blokk.rect.h
+                        self.rect.y += blokk.lykkab
+                    else:
+                        self.rect.y = blokk.rect.y-self.rect.h
+                elif(blokk.dy < 0): # blokk liigub yles
+                    if(self.rect.y<blokk.rect.y):
+                        self.rect.y =  blokk.rect.y-self.rect.h
+                        self.rect.y -= blokk.lykkab
+                    else:
+                        self.rect.y = blokk.rect.y+blokk.rect.h
+
+

@@ -40,7 +40,7 @@ class Game:
         """
         self.blokityyp = {
             "tavaline" : {
-                "maxKiirus" : 0.6,
+                "maxKiirus" : 0.2,
                 "maxW" : 50,
                 "maxH" : 50,
                 "lykkab" : 0,
@@ -48,7 +48,7 @@ class Game:
                 "color" : (0,200,0)
             },
             "lykkaja" : {
-                "maxKiirus" : 0.4,
+                "maxKiirus" : 0.2,
                 "maxW" : 10,
                 "maxH" : 60,
                 "lykkab" : 200,
@@ -74,34 +74,22 @@ class Game:
         self.mees.update_logic() # uuendab meest
         
         for blokk in self.blokid:
-            blokk.update_logic()
-    
-            if (collision(blokk.rect, self.mees.rect)): #kokkuporge MEHE JA BLOKI VAHEL
-                if(blokk.dx < 0): # blokk liigub vasakule
-                    if(self.mees.rect.x <= blokk.rect.x):
-                        self.mees.rect.x = blokk.rect.x-self.mees.rect.w # lykkame kaasa
-                        self.mees.rect.x -= blokk.lykkab
-                    else:
-                        self.mees.rect.x += 1 # lykkame tagasi
-                        self.mees.rect.x += blokk.lykkab
-                elif(blokk.dx > 0): # blokk liigub paremale
-                    if(self.mees.rect.x >= blokk.rect.x):
-                        self.mees.rect.x = blokk.rect.x+blokk.rect.w
-                        self.mees.rect.x += blokk.lykkab
-                    else:
-                        self.mees.rect.x -= 1
-                        self.mees.rect.x -= blokk.lykkab
 
-        self.check_bullets()
+            blokk.update_logic() # uuendame bloki liikumist
+
+            self.mees.check_collision(blokk) # vaatame kas blokk porkab kokku mehega
+
+
+        self.check_bullets() # uuendab v2lja lastud kuulidega seotud loogikat
 
         for enemy in game.pahad:
-            enemy.attack(self.mees) # tyre
+            enemy.attack(self.mees) # lape
 
             if(collision(enemy.rect, self.mees.rect)): # kui paha puutub peameest
                 self.mees.getRekt(enemy.dmg) # peamees saab dmg
                 self.pahad.remove(enemy) # paha ohverdas kahjuks end :(
 
-    def update_display(self):
+    def update_display(self): # uuendab koike mida naidatakse
         self.screen.fill((255,255,255)) # background
         self.mees.show(game.screen) # peavend
         
@@ -137,7 +125,7 @@ class Game:
         
     def create_bloks(self,count): # loob uusi blokke
         for i in range(count):
-            if(random.randint(1,3) > 1):
+            if(random.randint(1,3) > 1): # yks kolmele et tuleb ull blokk
                 temp = Blokk(self.blokityyp["tavaline"])
             else:
                 temp = Blokk(self.blokityyp["lykkaja"])
