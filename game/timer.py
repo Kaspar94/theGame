@@ -20,6 +20,8 @@ class Timer:
     def pauseChange(self):
         self.paused = -self.paused
 
+    def reset_n(self,n):
+        self.c = n*1000
     def reset(self):
         self.start = pygame.time.get_ticks()        
         self.running = True

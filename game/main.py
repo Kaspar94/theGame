@@ -42,8 +42,8 @@ class Game:
         self.blokityyp = {
             "tavaline" : {
                 "maxKiirus" : 0.2,
-                "maxW" : 50,
-                "maxH" : 50,
+                "maxS" : 50,
+                "maxS" : 50,
                 "lykkab" : 0,
                 "dmg" : 0,
                 "color" : (0,200,0)
@@ -81,9 +81,15 @@ class Game:
 
         self.run = True
 
+        self.mouseHolding = False
+
     def update_logic(self):
+
         self.mees.update_logic() # uuendab meest
-        
+
+        if(self.mouseHolding):
+            self.mees.automatic()
+
         for blokk in self.blokid:
 
             blokk.update_logic() # uuendame bloki liikumist
@@ -129,6 +135,7 @@ class Game:
             self.del_enemies()
             self.create_bloks(self.level*3)
             self.create_enemies(self.level*10)
+
     def next_level(self):
         self.level += 1 # uuendame levelit
         time.sleep(1)
@@ -197,11 +204,29 @@ while game.run == True: # main loop
         if evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_p:
                 game.levelTimer.pauseChange()
-        if evt.type == pygame.QUIT: # kasutaja soovib lahkuda
+            elif evt.key == pygame.K_1:
+                game.mees.switchWeapon("handgun")
+            elif evt.key == pygame.K_2:
+                game.mees.switchWeapon("pump")
+            elif evt.key == pygame.K_3:
+                game.mees.switchWeapon("machinegun")
+            elif evt.key == pygame.K_4:
+                game.mees.switchWeapon("")
+            elif evt.key == pygame.K_5:
+                game.mees.switchWeapon("")
+            elif evt.key == pygame.K_6:
+                game.mees.drinkPotion("defense")
+            elif evt.key == pygame.K_7:
+                game.mees.drinkPotion("speed")
+        elif evt.type == pygame.QUIT: # kasutaja soovib lahkuda
             game.run = False
-        if evt.type == pygame.MOUSEBUTTONDOWN:
+        elif evt.type == pygame.MOUSEBUTTONDOWN:
             if(game.levelTimer.paused == -1):
                 game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
+                game.mouseHolding = True
+        elif evt.type == pygame.MOUSEBUTTONUP:
+            if(game.levelTimer.paused == -1):
+                game.mouseHolding = False
         
     if(game.levelTimer.paused == 1):
         continue
