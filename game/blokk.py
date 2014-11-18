@@ -27,8 +27,8 @@ class Blokk(object): # tyypiline takistus
         self.new_shape()
 
     def update_logic(self):
-        if (((self.suund == "hor") and (self.rect.x < 0 and self.dx < 0 or self.rect.x > SCREEN_WIDTH  and self.dx > 0))\
-            or (self.suund == "ver") and (self.rect.y < 0 and self.dy < 0 or self.rect.y > SCREEN_HEIGHT and self.dy > 0)):
+        if (((self.suund == "hor") and (self.rect.x+self.rect.w < 0 and self.dx < 0 or self.rect.x-self.rect.w > SCREEN_WIDTH  and self.dx > 0))\
+            or (self.suund == "ver") and (self.rect.y+self.rect.h < 0 and self.dy < 0 or self.rect.y-self.rect.h > SCREEN_HEIGHT and self.dy > 0)):
                 # kui kast jookseb valja mapist
             self.new_crds()
             self.new_shape()
