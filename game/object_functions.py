@@ -11,6 +11,9 @@ class Rect:
         self.h = h
     def get(self):
         return (self.x, self.y, self.w, self.h)
+
+    def set(self,crds): # satib uued koordinaaid n shit
+        self.x,self.y,self.w,self.h=crds
     
 def collision(rect1, rect2): # kontrollib kas kokkuporge
     if(rect1.x < rect2.x+rect2.w and rect1.x+rect1.w > rect2.x and \

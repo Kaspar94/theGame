@@ -28,7 +28,7 @@ class Blokk(object): # tyypiline takistus
 
     def update_logic(self):
         if (((self.suund == "hor") and (self.rect.x < 0 and self.dx < 0 or self.rect.x > SCREEN_WIDTH  and self.dx > 0))\
-            or (self.suund == "ver") and (self.rect.y < 0 and self.dy < 0 or self.rect.y > SCREEN_HEIGHT and self.dx > 0)):
+            or (self.suund == "ver") and (self.rect.y < 0 and self.dy < 0 or self.rect.y > SCREEN_HEIGHT and self.dy > 0)):
                 # kui kast jookseb valja mapist
             self.new_crds()
             self.new_shape()
@@ -42,6 +42,8 @@ class Blokk(object): # tyypiline takistus
     def new_shape(self): # loob uue kuju blokile
         self.rect.w = random.randint(5,self.maxW)
         self.rect.h = random.randint(5,self.maxH)
+        self.rect.w = 50
+        self.rect.h = 50
 
     def new_crds(self):
         if(self.suund == "hor"): # loome koordinaaid horisontaalselt liikumiseks

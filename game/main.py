@@ -89,7 +89,7 @@ class Game:
                 self.mees.getRekt(enemy.dmg) # peamees saab dmg
                 self.pahad.remove(enemy) # paha ohverdas kahjuks end :(
 
-    def update_display(self):
+    def update_display(self): # uuendab koike mida naidatakse
         self.screen.fill((255,255,255)) # background
         self.mees.show(game.screen) # peavend
         
