@@ -79,7 +79,7 @@ class Mees(object): # peamees
 
     def getRekt(self,dmg):
 
-        #self.lives -= dmg # vahendame elusi dmg vorra
+        self.lives -= dmg # vahendame elusi dmg vorra
 
         if(self.lives == 0): # kas oleme surnud?
             # ... siia midagi valja moelda
@@ -130,13 +130,10 @@ class Mees(object): # peamees
                     else:
                         self.rect.y = blokk.rect.y-self.rect.h
                 elif(blokk.dy < 0): # blokk liigub yles
-                    print ("k")
                     if(self.rect.y<blokk.rect.y):
                         self.rect.y =  blokk.rect.y-self.rect.h
                         self.rect.y -= blokk.lykkab
-                        print ("o")
                     else:
-                        print ("n")
                         self.rect.y = blokk.rect.y+blokk.rect.h
 
 
