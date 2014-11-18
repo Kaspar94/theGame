@@ -1,5 +1,5 @@
 import pygame, random
-from object_functions import Rect
+from object_functions import *
 from variables import *
 from bullet import Bullet
 
@@ -78,7 +78,36 @@ class Mees(object): # peamees
                     self.relvad[self.relv]["kokku"] -= self.relvad[self.relv]["pide"]
 
     def getRekt(self,dmg):
-        self.lives -= dmg
-        if(self.lives == 0):
+
+        self.lives -= dmg # vahendame elusi dmg vorra
+
+        if(self.lives == 0): # kas oleme surnud?
+            # ... siia midagi valja moelda
             print ("gameover")
             self.speed = 0
+
+    def check_collision(self,blokk):
+
+        if(collision(blokk.rect, self.rect)): #kokkuporge MEHE JA BLOKI VAHEL
+
+            if(blokk.suund == "hor"): # blokk liigub horisontaalselt
+                if(blokk.dx > 0) # blokk liigub paremale
+
+                elif(blokk.dx < 0): # blokk liigub vasakule
+
+
+                if(self.rect.x <= blokk.rect.x):
+                    self.rect.x = blokk.rect.x-self.rect.w # lykkame kaasa
+                    self.rect.x -= blokk.lykkab
+                else:
+                    self.rect.x += 1 # lykkame tagasi
+                    self.rect.x += blokk.lykkab
+
+            """
+            elif(blokk.dx > 0): # blokk liigub paremale
+                if(self.rect.x >= blokk.rect.x):
+                    self.rect.x = blokk.rect.x+blokk.rect.w
+                    self.rect.x += blokk.lykkab
+                else:
+                    self.rect.x -= 1
+                    self.rect.x -= blokk.lykkab"""

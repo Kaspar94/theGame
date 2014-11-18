@@ -4,12 +4,19 @@ from variables import *
 class Blokk(object): # tyypiline takistus
     global SCREEN_HEIGHT
     def __init__(self,tyyp):
-        if(random.random() > 0.5):
+
+        self.dx = 0
+        self.dy = 0
+
+        if(random.randint(1,2) == 1):
+            # hakkab liikuma horisontaalselt
             self.dx = random.uniform(0.1,tyyp["maxKiirus"])
-            self.dy = 0
+            self.suund = "hor"
         else:
-            self.dx = 0
+            # hakkab liikuma vertikaalselt
             self.dy = random.uniform(0.1,tyyp["maxKiirus"])
+            self.suund = "ver" # suund horisont.
+
         self.maxW = tyyp["maxW"]
         self.maxH = tyyp["maxH"]
         self.lykkab = tyyp["lykkab"]
@@ -20,13 +27,16 @@ class Blokk(object): # tyypiline takistus
         self.new_shape()
 
     def update_logic(self):
-        if ((self.rect.x < 0 and self.dx < 0 or self.rect.x > SCREEN_WIDTH and self.dx > 0) \
-                or (self.rect.y < 0 and self.dy < 0 or self.rect.y > SCREEN_HEIGHT and self.dy > 0)):
+        if (((self.suund == "hor") and (self.rect.x < 0 and self.dx < 0 or self.rect.x > SCREEN_WIDTH  and self.dx > 0))\
+            or (self.suund == "ver") and (self.rect.y < 0 and self.dy < 0 or self.rect.y > SCREEN_HEIGHT and self.dx > 0)):
+                # kui kast jookseb valja mapist
             self.new_crds()
             self.new_shape()
+
         self.rect.x += self.dx
         self.rect.y += self.dy
-    def show(self, scr): # n2itab 
+
+    def show(self, scr): # n2itab
         pygame.draw.rect(scr, self.color ,self.rect.get())
 
     def new_shape(self): # loob uue kuju blokile
@@ -34,13 +44,16 @@ class Blokk(object): # tyypiline takistus
         self.rect.h = random.randint(5,self.maxH)
 
     def new_crds(self):
-        self.rect.x = crd_out_x(200) # votame suvad koordinaadid
-        self.rect.y = crd_in_y()
-        if(self.rect.x > 0):
-            if(self.dx != 0):
-                self.dx = -self.dx # kui kast tuleb paremalt poolt, muudame suunda
-        if(self.rect.y > 0):
-            if(self.dy != 0):
-                self.dy = -self.dy
-    def disappear(self):
+        if(self.suund == "hor"): # loome koordinaaid horisontaalselt liikumiseks
+            self.rect.x = crd_out_x(200) # votame suvad koordinaadid
+            self.rect.y = crd_in_y()
+            if(self.rect.x > 0): # kui kast paremal pool:
+                self.dx = -self.dx # liigume vasakule mitte paremale
+        else: # loome koordinaadid vertikaalselt liitkumiseks
+            self.rect.x = crd_in_x()
+            self.rect.y = crd_out_y(200)
+            if(self.rect.y > 0):
+                self.dy = -self.dy # liigume seljuhul alla.
+
+    def disappear(self): # muutub nahtamatuks veits ajaks.
         pass
