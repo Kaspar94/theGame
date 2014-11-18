@@ -2,12 +2,16 @@ import pygame, random
 from object_functions import *
 
 class PahaPoiss(object):
-    def __init__(self, eluMax, speedMax, suurusMin):
-        self.elusi = random.randint(1,eluMax) # palju pahal kutil elusi on?
-        self.rect = Rect(crd_out_x(300), crd_out_y(300), random.randint(suurusMin,30), random.randint(suurusMin,30)) # kus kutt spawnib
-        self.color = (255,0,255) # v2rv
-        self.speed = 0.1 # ta kiirus
-        self.dmg = 1 # kuti d2mm
+    def __init__(self, type):
+        """
+
+        hello, im a bad guy
+        """
+        self.elusi = type["elusi"]
+        self.rect = Rect(crd_out_x(600), crd_out_y(600), type["w"], type["h"]) # kus kutt spawnib
+        self.color = type["color"] # v2rv
+        self.speed = type["speed"] # ta kiirus
+        self.dmg = type["dmg"] # kuti d2mm
         
     def attack(self,target):
 

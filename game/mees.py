@@ -19,12 +19,12 @@ class Mees(object): # peamees
 
         #voimalikud relvad
         self.relvad = { "handgun" :
-                        { "dmg" : 1,
-                          "speed" : 0.5,
-                          "hoida" : 0,
-                          "bullets" : 12,
-                          "pide" : 12,
-                          "kokku" : 48,
+                        { "dmg" : 1, # palju relv dmg teeb
+                          "speed" : 0.5, # kui kiirelt kuul lendab
+                          "hoida" : 0, # kas automaat
+                          "bullets" : 12, # palju kuule
+                          "pide" : 12, # palju pide hoiab
+                          "kokku" : 48, # palju kokku kuule
                           "korraga" : 1
                         },
                         "machinegun" :
@@ -59,7 +59,7 @@ class Mees(object): # peamees
         scr.blit(scoretext2, (200, 730))
 
     def shoot(self,start,end,mouseButton):
-        if(self.relvad[self.relv]["bullets"] <= 0): # pole kuule?
+        if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0): # pole kuule?
             return
 
         for i in range(self.relvad[self.relv]["korraga"]):      # laseme kuulid valja     
@@ -79,12 +79,14 @@ class Mees(object): # peamees
 
     def getRekt(self,dmg):
 
-        self.lives -= dmg # vahendame elusi dmg vorra
+        #self.lives -= dmg # vahendame elusi dmg vorra
 
         if(self.lives == 0): # kas oleme surnud?
             # ... siia midagi valja moelda
             print ("gameover")
             self.speed = 0
+            return True # tagastab true kui null elu, et mang teaks mida edasi teha
+        return False
 
     def check_collision(self,blokk): # uurib kokkupuudet mehe ja bloki vahel
 
@@ -128,10 +130,13 @@ class Mees(object): # peamees
                     else:
                         self.rect.y = blokk.rect.y-self.rect.h
                 elif(blokk.dy < 0): # blokk liigub yles
+                    print ("k")
                     if(self.rect.y<blokk.rect.y):
                         self.rect.y =  blokk.rect.y-self.rect.h
                         self.rect.y -= blokk.lykkab
+                        print ("o")
                     else:
+                        print ("n")
                         self.rect.y = blokk.rect.y+blokk.rect.h
 
 

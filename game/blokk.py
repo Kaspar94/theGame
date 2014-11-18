@@ -42,8 +42,6 @@ class Blokk(object): # tyypiline takistus
     def new_shape(self): # loob uue kuju blokile
         self.rect.w = random.randint(5,self.maxW)
         self.rect.h = random.randint(5,self.maxH)
-        self.rect.w = 50
-        self.rect.h = 50
 
     def new_crds(self):
         if(self.suund == "hor"): # loome koordinaaid horisontaalselt liikumiseks
