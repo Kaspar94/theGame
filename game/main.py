@@ -24,8 +24,9 @@ class Game:
 
         pygame.init()
 
-        self.size = (WIDTH, HEIGHT)
-        self.screen = pygame.display.set_mode(self.size)
+        self.width = WIDTH
+        self.height = HEIGHT
+        self.screen = pygame.display.set_mode((self.width,self.height))
 
         #pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         #pygame.mixer.music.load('madis.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS 
@@ -41,22 +42,32 @@ class Game:
         self.blokityyp = {
             "tavaline" : {
                 "maxKiirus" : 0.2,
-                "maxW" : 50,
-                "maxH" : 50,
+                "maxS" : 50,
+                "maxS" : 50,
                 "lykkab" : 0,
                 "dmg" : 0,
                 "color" : (0,200,0)
             },
             "lykkaja" : {
                 "maxKiirus" : 0.2,
-                "maxW" : 10,
-                "maxH" : 60,
+                "maxS" : 50,
+                "minS" : 60,
                 "lykkab" : 200,
                 "dmg" : 2,
                 "color" : (125,120,50)
             }
 
 
+        }
+        self.enemytype = {
+            "tavaline" : {
+                "elusi" : 1,
+                "w": 15,
+                "h": 15,
+                "color" : (255,0,255),
+                "speed" : 0.1,
+                "dmg" : 1
+            }
         }
 
         self.blokid = []
@@ -70,9 +81,15 @@ class Game:
 
         self.run = True
 
+        self.mouseHolding = False
+
     def update_logic(self):
+
         self.mees.update_logic() # uuendab meest
-        
+
+        if(self.mouseHolding):
+            self.mees.automatic()
+
         for blokk in self.blokid:
 
             blokk.update_logic() # uuendame bloki liikumist
@@ -86,7 +103,9 @@ class Game:
             enemy.attack(self.mees) # lape
 
             if(collision(enemy.rect, self.mees.rect)): # kui paha puutub peameest
-                self.mees.getRekt(enemy.dmg) # peamees saab dmg
+                if(self.mees.getRekt(enemy.dmg)):
+                    # mang labi
+                    pass
                 self.pahad.remove(enemy) # paha ohverdas kahjuks end :(
 
     def update_display(self): # uuendab koike mida naidatakse
@@ -115,11 +134,15 @@ class Game:
             self.del_bloks()
             self.del_enemies()
             self.create_bloks(self.level*3)
-            self.create_enemies(self.level*3)
+            self.create_enemies(self.level*10)
+
     def next_level(self):
         self.level += 1 # uuendame levelit
         time.sleep(1)
+        self.mees.relvad[self.mees.relv]["kokku"] += 20
         print ("nextlvl")
+        print(len(self.blokid))
+        print (len(self.pahad))
         #self.blokid = [] # kustutame vanad ?
         #self.pahad = []
         
@@ -134,7 +157,7 @@ class Game:
 
     def create_enemies(self,count): # loob uusi vastaseid
         for i in range(count):
-            temp = PahaPoiss(game.level,1,20)
+            temp = PahaPoiss(self.enemytype["tavaline"])
             self.pahad.append(temp)
 
     def del_bloks(self):
@@ -145,6 +168,9 @@ class Game:
 
     def check_bullets(self): # 
         for bullet in self.mees.bullets: # vaatame millega kuulid kokku porkavad :
+            if(bullet.rect.x > self.width or bullet.rect.x < 0 or bullet.rect.y > self.height or bullet.rect.y < 0):
+                if(bullet in self.mees.bullets): # mingi lamp
+                    self.mees.bullets.remove(bullet)
             bullet.update_logic()
             for blokk in self.blokid: # blokiga?
                 if(collision(bullet.rect, blokk.rect)):
@@ -167,7 +193,7 @@ game.mees = Mees() # peavend
 
 """ level 1 """
 game.create_bloks(10) # viis vastast
-game.create_enemies(2) # kaks vastast
+game.create_enemies(20) # kaks vastast, viisakas
 """         """
 
 
@@ -178,11 +204,29 @@ while game.run == True: # main loop
         if evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_p:
                 game.levelTimer.pauseChange()
-        if evt.type == pygame.QUIT: # kasutaja soovib lahkuda
+            elif evt.key == pygame.K_1:
+                game.mees.switchWeapon("handgun")
+            elif evt.key == pygame.K_2:
+                game.mees.switchWeapon("pump")
+            elif evt.key == pygame.K_3:
+                game.mees.switchWeapon("machinegun")
+            elif evt.key == pygame.K_4:
+                game.mees.switchWeapon("")
+            elif evt.key == pygame.K_5:
+                game.mees.switchWeapon("")
+            elif evt.key == pygame.K_6:
+                game.mees.drinkPotion("defense")
+            elif evt.key == pygame.K_7:
+                game.mees.drinkPotion("speed")
+        elif evt.type == pygame.QUIT: # kasutaja soovib lahkuda
             game.run = False
-        if evt.type == pygame.MOUSEBUTTONDOWN:
+        elif evt.type == pygame.MOUSEBUTTONDOWN:
             if(game.levelTimer.paused == -1):
                 game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
+                game.mouseHolding = True
+        elif evt.type == pygame.MOUSEBUTTONUP:
+            if(game.levelTimer.paused == -1):
+                game.mouseHolding = False
         
     if(game.levelTimer.paused == 1):
         continue

@@ -17,8 +17,8 @@ class Blokk(object): # tyypiline takistus
             self.dy = random.uniform(0.1,tyyp["maxKiirus"])
             self.suund = "ver" # suund horisont.
 
-        self.maxW = tyyp["maxW"]
-        self.maxH = tyyp["maxH"]
+        self.maxS = tyyp["maxS"]
+        self.minS = tyyp["maxS"]
         self.lykkab = tyyp["lykkab"]
         self.dmg = tyyp["dmg"]
         self.color = tyyp["color"] # v2rv
@@ -27,8 +27,8 @@ class Blokk(object): # tyypiline takistus
         self.new_shape()
 
     def update_logic(self):
-        if (((self.suund == "hor") and (self.rect.x < 0 and self.dx < 0 or self.rect.x > SCREEN_WIDTH  and self.dx > 0))\
-            or (self.suund == "ver") and (self.rect.y < 0 and self.dy < 0 or self.rect.y > SCREEN_HEIGHT and self.dy > 0)):
+        if (((self.suund == "hor") and (self.rect.x+self.rect.w < 0 and self.dx < 0 or self.rect.x-self.rect.w > SCREEN_WIDTH  and self.dx > 0))\
+            or (self.suund == "ver") and (self.rect.y+self.rect.h < 0 and self.dy < 0 or self.rect.y-self.rect.h > SCREEN_HEIGHT and self.dy > 0)):
                 # kui kast jookseb valja mapist
             self.new_crds()
             self.new_shape()
@@ -40,10 +40,8 @@ class Blokk(object): # tyypiline takistus
         pygame.draw.rect(scr, self.color ,self.rect.get())
 
     def new_shape(self): # loob uue kuju blokile
-        self.rect.w = random.randint(5,self.maxW)
-        self.rect.h = random.randint(5,self.maxH)
-        self.rect.w = 50
-        self.rect.h = 50
+        self.rect.w = random.randint(self.minS,self.maxS)
+        self.rect.h = random.randint(self.minS,self.maxS)
 
     def new_crds(self):
         if(self.suund == "hor"): # loome koordinaaid horisontaalselt liikumiseks
