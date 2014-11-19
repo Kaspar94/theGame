@@ -96,8 +96,8 @@ class Mees(object): # peamees
         for i in range(self.relvad[self.relv]["korraga"]):      # laseme kuulid valja     
             temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
             if(self.relv == "pump"): # 2 kuuli lisaks
-                temp2 = Bullet(start[0],start[1],end[0]-50,end[1],self.relvad[self.relv])
-                temp3 = Bullet(start[0],start[1],end[0]+50,end[1],self.relvad[self.relv])
+                temp2 = Bullet(start[0],start[1],end[0]-50,end[1]-50,self.relvad[self.relv])
+                temp3 = Bullet(start[0],start[1],end[0]+50,end[1]+50,self.relvad[self.relv])
                 self.bullets.append(temp2)
                 self.bullets.append(temp3)
             self.bullets.append(temp)
