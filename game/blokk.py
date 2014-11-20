@@ -17,8 +17,8 @@ class Blokk(object): # tyypiline takistus
             self.dy = random.uniform(0.1,tyyp["maxKiirus"])
             self.suund = "ver" # suund horisont.
 
-        self.maxS = tyyp["maxS"]
-        self.minS = tyyp["maxS"]
+        self.w = tyyp["w"]
+        self.h = tyyp["h"]
         self.lykkab = tyyp["lykkab"]
         self.dmg = tyyp["dmg"]
         self.color = tyyp["color"] # v2rv
@@ -37,11 +37,20 @@ class Blokk(object): # tyypiline takistus
         self.rect.y += self.dy
 
     def show(self, scr): # n2itab
-        pygame.draw.rect(scr, self.color ,self.rect.get())
+        if(rect_in_map(self.rect)): # kontrollime kas objekt mapi sees et mitte teha asjatuid joonistamisi.
+            pygame.draw.rect(scr, self.color ,self.rect.get())
 
     def new_shape(self): # loob uue kuju blokile
-        self.rect.w = random.randint(self.minS,self.maxS)
-        self.rect.h = random.randint(self.minS,self.maxS)
+        self.rect.w = self.w
+        self.rect.h = self.h
+        if(self.lykkab > 0):
+            """
+            lykkavad blokid on peeniksed aga pikad.
+            seega kui blokk liigub vertikaalselt peame ara vahetama
+            """
+            if(self.dy != 0): # vaatame kas liigub vertikaalselt
+                self.rect.w = self.h
+                self.rect.h = self.w
 
     def new_crds(self):
         if(self.suund == "hor"): # loome koordinaaid horisontaalselt liikumiseks

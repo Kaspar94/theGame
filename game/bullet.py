@@ -1,16 +1,21 @@
 import pygame, math
 from object_functions import *
 class Bullet(object):
-    def __init__(self,startX,startY,mouseX,mouseY,relv):
+    def __init__(self,startX,startY,mouseX,mouseY,relv=False):
         self.rect = Rect(startX,startY,5,5)
-        self.relv = relv
         self.startX = startX
         self.startY = startY
         self.mouseX = mouseX
         self.mouseY = mouseY
-        self.speed = self.relv["speed"]
-        self.dmg = self.relv["dmg"]
-        
+
+        if(relv != False):
+            self.relv = relv
+            self.speed = self.relv["speed"]
+            self.dmg = self.relv["dmg"]
+        else:
+            self.speed = 0.5
+            self.dmg = 1
+
         self.distance = (self.mouseX - self.startX, self.mouseY - self.startY) # they did the math
         self.norm = math.sqrt(self.distance[0] ** 2 + self.distance[1] ** 2)
         self.direction = (self.distance[0] / self.norm, self.distance[1] / self.norm)

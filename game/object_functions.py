@@ -47,3 +47,10 @@ def crd_in_x(): # genereerib suvalise x koordinaadi mapi sees
 def crd_in_y(): # genereerib suvalise y koordinaadi mapi sees
     global SCREEN_HEIGHT
     return random.randint(0,SCREEN_HEIGHT)
+
+def rect_in_map(rect): # tagastab true kui objekt asub mapis
+    global SCREEN_HEIGHT,SCREEN_WIDTH
+    if not(rect.x+rect.w < 0 or rect.x > SCREEN_WIDTH or rect.y > SCREEN_HEIGHT or rect.y+rect.h < 0):
+        return True
+    else:
+        return False
