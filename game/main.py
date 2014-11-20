@@ -122,7 +122,7 @@ class Game:
             enemy.show(self.screen)
 
         # muu lape
-        pygame.draw.rect(self.screen, (0,0,0), (0,700,640,10)) # porand
+        #pygame.draw.rect(self.screen, (0,0,0), (0,700,640,10)) # porand
         scoretext=self.font.render("Score:"+str(self.level), 1,(0,255,255))
         self.screen.blit(scoretext, (200, 700))
         pygame.display.flip()
@@ -169,7 +169,8 @@ class Game:
             bullet.update_logic()
             for blokk in self.blokid: # blokiga?
                 if(collision(bullet.rect, blokk.rect)):
-                   self.mees.bullets.remove(bullet) # kui jah siis kustutame kuuli.
+                    if(bullet in self.mees.bullets):
+                        self.mees.bullets.remove(bullet) # kui jah siis kustutame kuuli.
                    break
             for enemy in self.pahad: # pahade poistega ?
                 if(collision(bullet.rect, enemy.rect)):
