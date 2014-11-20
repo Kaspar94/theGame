@@ -72,6 +72,8 @@ class Mees(object): # peamees
         elif(self.rect.x < 0):
             self.rect.x = 0
 
+        for bullet in self.bullets:
+            bullet.update_logic()
             
     def show(self, scr):
         pygame.draw.rect(scr, self.color, self.rect.get())
@@ -79,6 +81,9 @@ class Mees(object): # peamees
         scoretext2=self.font.render("Lives:"+str(self.lives), 1,(255,0,255))
         scr.blit(scoretext, (300, SCREEN_HEIGHT-100))
         scr.blit(scoretext2, (200, SCREEN_HEIGHT-100))
+
+        for bullet in self.bullets: # joonistame koik kuulid
+            bullet.show(scr)
 
     def switchWeapon(self,slot): # vahetab relva
         if(self.relvakogu[slot] == 1): # relv on relvakogus
@@ -183,5 +188,7 @@ class Mees(object): # peamees
                         self.rect.y -= blokk.lykkab
                     else:
                         self.rect.y = blokk.rect.y+blokk.rect.h
+
+            self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
 
 

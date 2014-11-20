@@ -41,17 +41,17 @@ class Game:
         """
         self.blokityyp = {
             "tavaline" : {
-                "maxKiirus" : 0.8,
-                "maxS" : 50,
-                "maxS" : 50,
-                "lykkab" : 0,
-                "dmg" : 0,
+                "maxKiirus" : 0.2, # bloki maksimaalne kiirus
+                "w" : 50, # laius
+                "h" : 50, # pikkus
+                "lykkab" : 0, # lykkamistugevus
+                "dmg" : 0, # dmg kokkuporkel
                 "color" : (0,200,0)
             },
             "lykkaja" : {
-                "maxKiirus" : 0.5,
-                "maxS" : 50,
-                "minS" : 60,
+                "maxKiirus" : 0.2,
+                "w" : 20,
+                "h" : 70,
                 "lykkab" : 200,
                 "dmg" : 2,
                 "color" : (125,120,50)
@@ -67,6 +67,16 @@ class Game:
                 "color" : (255,0,255),
                 "speed" : 0.1,
                 "dmg" : 1
+            },
+            "tulistaja" : {
+                "elusi" : 2,
+                "w" : 20,
+                "h" : 20,
+                "color" : (255,255,0),
+                "speed" : 0.05,
+                "dmg" : 2,
+                "weapon" : 1,
+                "delay" : 1
             }
         }
 
@@ -115,9 +125,6 @@ class Game:
         for blokk in self.blokid: # joonistame koik blokid
             blokk.show(self.screen)
             
-        for bullet in self.mees.bullets: # joonistame koik kuulid
-            bullet.show(self.screen)
-            
         for enemy in self.pahad: # joonistame koik pahad
             enemy.show(self.screen)
 
@@ -152,7 +159,10 @@ class Game:
 
     def create_enemies(self,count): # loob uusi vastaseid
         for i in range(count):
-            temp = Enemy(self.enemytype["tavaline"])
+            if(random.randint(1,5) > 1): # 20% et tulistaja
+                temp = Enemy(self.enemytype["tavaline"])
+            else:
+                temp = Enemy(self.enemytype["tulistaja"])
             self.pahad.append(temp)
 
     def del_bloks(self):
@@ -161,25 +171,48 @@ class Game:
     def del_enemies(self):
         self.pahad = []
 
-    def check_bullets(self): # 
+    def check_bullets(self): #
         for bullet in self.mees.bullets: # vaatame millega kuulid kokku porkavad :
-            if(bullet.rect.x > self.width or bullet.rect.x < 0 or bullet.rect.y > self.height or bullet.rect.y < 0):
+
+            if not(rect_in_map(bullet.rect)): # kustutame kuuli kui see poel enam mapi piires.wd
                 if(bullet in self.mees.bullets): # mingi lamp
                     self.mees.bullets.remove(bullet)
-            bullet.update_logic()
+                    continue # kuul eemaldatud, ehk votame jargmise ette
+
             for blokk in self.blokid: # blokiga?
                 if(collision(bullet.rect, blokk.rect)):
                     if(bullet in self.mees.bullets):
                         self.mees.bullets.remove(bullet) # kui jah siis kustutame kuuli.
                     break
+
             for enemy in self.pahad: # pahade poistega ?
                 if(collision(bullet.rect, enemy.rect)):
                     if (enemy.getRekt(bullet.dmg)):
                         self.pahad.remove(enemy)
                     if(bullet in self.mees.bullets): # mingi lamp
                         self.mees.bullets.remove(bullet)
-    
-    
+
+        for enemy in self.pahad:
+
+            if(enemy.shooter):
+
+                for bullet in enemy.bullets:
+                    if not(rect_in_map(bullet.rect)): # kui kuul mapist valjas
+                        if(bullet in enemy.bullets):
+                            enemy.bullets.remove(bullet)
+                            continue
+
+                    for blokk in self.blokid: # blokiga?
+                        if(collision(bullet.rect, blokk.rect)):
+                            if(bullet in enemy.bullets):
+                                enemy.bullets.remove(bullet) # kui jah siis kustutame kuuli.
+                                break
+
+                    if(collision(bullet.rect,self.mees.rect)):
+                        self.mees.getRekt(bullet.dmg)
+                        enemy.bullets.remove(bullet) # kui jah siis kustutame kuuli.
+
+
 
 
 
@@ -188,8 +221,8 @@ game = Game(SCREEN_WIDTH, SCREEN_HEIGHT) # peamaang
 game.mees = Mees() # peavend
 
 """ level 1 """
-game.create_bloks(10) # viis vastast
-game.create_enemies(25) # kaks vastast, viisakas
+game.create_bloks(5) # viis vastast
+game.create_enemies(10) # kaks vastast, viisakas
 """         """
 
 
