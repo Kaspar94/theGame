@@ -171,7 +171,7 @@ class Game:
                 if(collision(bullet.rect, blokk.rect)):
                     if(bullet in self.mees.bullets):
                         self.mees.bullets.remove(bullet) # kui jah siis kustutame kuuli.
-                   break
+                    break
             for enemy in self.pahad: # pahade poistega ?
                 if(collision(bullet.rect, enemy.rect)):
                     if (enemy.getRekt(bullet.dmg)):
