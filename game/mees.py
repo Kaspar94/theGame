@@ -77,8 +77,8 @@ class Mees(object): # peamees
         pygame.draw.rect(scr, self.color, self.rect.get())
         scoretext=self.font.render("Bullets:"+str(self.relvad[self.relv]["bullets"])+"/"+str(self.relvad[self.relv]["kokku"]), 1,(255,0,255))
         scoretext2=self.font.render("Lives:"+str(self.lives), 1,(255,0,255))
-        scr.blit(scoretext, (300, 730))
-        scr.blit(scoretext2, (200, 730))
+        scr.blit(scoretext, (300, SCREEN_HEIGHT-100))
+        scr.blit(scoretext2, (200, SCREEN_HEIGHT-100))
 
     def switchWeapon(self,slot): # vahetab relva
         if(self.relvakogu[slot] == 1): # relv on relvakogus

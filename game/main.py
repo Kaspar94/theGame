@@ -124,7 +124,7 @@ class Game:
         # muu lape
         #pygame.draw.rect(self.screen, (0,0,0), (0,700,640,10)) # porand
         scoretext=self.font.render("Score:"+str(self.level), 1,(0,255,255))
-        self.screen.blit(scoretext, (200, 700))
+        self.screen.blit(scoretext, (200, 500))
         pygame.display.flip()
         
     def Level(self):
