@@ -97,7 +97,7 @@ class Game:
 
         self.mees.update_logic() # uuendab meest
 
-        if(self.mouseHolding):
+        if(self.mouseHolding): # kui hiirt hoitakse all->automaatne tulistamine
             self.mees.automatic()
 
         for blokk in self.blokid:
@@ -106,6 +106,8 @@ class Game:
 
             self.mees.check_collision(blokk) # vaatame kas blokk porkab kokku mehega
 
+            for enemy in self.pahad:
+                enemy.check_collision(blokk)
 
         self.check_bullets() # uuendab v2lja lastud kuulidega seotud loogikat
 
@@ -117,6 +119,7 @@ class Game:
                     # mang labi
                     pass
                 self.pahad.remove(enemy) # paha ohverdas kahjuks end :(
+
 
     def update_display(self): # uuendab koike mida naidatakse
         self.screen.fill((255,255,255)) # background
@@ -221,8 +224,8 @@ game = Game(SCREEN_WIDTH, SCREEN_HEIGHT) # peamaang
 game.mees = Mees() # peavend
 
 """ level 1 """
-game.create_bloks(5) # viis vastast
-game.create_enemies(10) # kaks vastast, viisakas
+game.create_bloks(9) # viis vastast
+game.create_enemies(20) # kaks vastast, viisakas
 """         """
 
 

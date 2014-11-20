@@ -66,3 +66,49 @@ class Enemy(object):
         end = (target.rect.x,target.rect.y)
         temp = Bullet(self.rect.x,self.rect.y,end[0],end[1])
         self.bullets.append(temp)
+
+    def check_collision(self,blokk):
+        if(collision(self.rect,blokk.rect)):
+            if(blokk.suund == "hor"): # blokk liigub horisontaalselt
+                # tulles alt voi ylevalt lykkame tagasi
+                if(self.rect.x+self.rect.w<blokk.rect.x+blokk.rect.w and (self.rect.y < blokk.rect.y)):
+                    self.rect.y = blokk.rect.y-self.rect.h
+                    return
+                elif(self.rect.x+self.rect.w<blokk.rect.x+blokk.rect.w and(self.rect.y+self.rect.h>blokk.rect.y+blokk.rect.h)):
+                    self.rect.y = blokk.rect.y+blokk.rect.h
+                    return
+
+                if(blokk.dx > 0): # blokk liigub paremale
+                    if(self.rect.x+self.rect.w>blokk.rect.x+blokk.rect.w):
+                        self.rect.x = blokk.rect.x+blokk.rect.w
+                       # self.rect.x += blokk.lykkab
+                    else:
+                        self.rect.x = blokk.rect.x-self.rect.w
+                elif(blokk.dx < 0): # blokk liigub vasakule
+                    if(self.rect.x<blokk.rect.x):
+                        self.rect.x =  blokk.rect.x-self.rect.w
+                        #self.rect.x -= blokk.lykkab
+                    else:
+                        self.rect.x = blokk.rect.x+blokk.rect.w
+
+            elif(blokk.suund == "ver"): # blokk liigub vertikaalselt
+                # tulles alt voi ylevalt lykkame tagasi
+                if(self.rect.y+self.rect.h<blokk.rect.y+blokk.rect.h and (self.rect.x < blokk.rect.x)):
+                    self.rect.x = blokk.rect.x-self.rect.w
+                    return
+                elif(self.rect.y+self.rect.h<blokk.rect.y+blokk.rect.h and self.rect.x+self.rect.w>blokk.rect.x+blokk.rect.w):
+                    self.rect.x = blokk.rect.x+blokk.rect.w
+                    return
+
+                if(blokk.dy > 0): # blokk liigub alla
+                    if(self.rect.y+self.rect.h>blokk.rect.y+blokk.rect.h):
+                        self.rect.y = blokk.rect.y+blokk.rect.h
+                        #self.rect.y += blokk.lykkab
+                    else:
+                        self.rect.y = blokk.rect.y-self.rect.h
+                elif(blokk.dy < 0): # blokk liigub yles
+                    if(self.rect.y<blokk.rect.y):
+                        self.rect.y =  blokk.rect.y-self.rect.h
+                        #self.rect.y -= blokk.lykkab
+                    else:
+                        self.rect.y = blokk.rect.y+blokk.rect.h
