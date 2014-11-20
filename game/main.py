@@ -140,11 +140,6 @@ class Game:
         self.level += 1 # uuendame levelit
         time.sleep(1)
         self.mees.relvad[self.mees.relv]["kokku"] += 20
-        print ("nextlvl")
-        print(len(self.blokid))
-        print (len(self.pahad))
-        #self.blokid = [] # kustutame vanad ?
-        #self.pahad = []
         
     def create_bloks(self,count): # loob uusi blokke
         for i in range(count):
