@@ -1,7 +1,7 @@
 import pygame, random
 from object_functions import *
 
-class PahaPoiss(object):
+class Enemy(object):
     def __init__(self, type):
         """
 

@@ -11,7 +11,7 @@ from timer import Timer
 from object_functions import *
 from blokk import Blokk
 from mees import Mees
-from enemy import PahaPoiss
+from enemy import Enemy
 from variables import *
 
 
@@ -41,7 +41,7 @@ class Game:
         """
         self.blokityyp = {
             "tavaline" : {
-                "maxKiirus" : 0.2,
+                "maxKiirus" : 0.8,
                 "maxS" : 50,
                 "maxS" : 50,
                 "lykkab" : 0,
@@ -49,7 +49,7 @@ class Game:
                 "color" : (0,200,0)
             },
             "lykkaja" : {
-                "maxKiirus" : 0.2,
+                "maxKiirus" : 0.5,
                 "maxS" : 50,
                 "minS" : 60,
                 "lykkab" : 200,
@@ -152,7 +152,7 @@ class Game:
 
     def create_enemies(self,count): # loob uusi vastaseid
         for i in range(count):
-            temp = PahaPoiss(self.enemytype["tavaline"])
+            temp = Enemy(self.enemytype["tavaline"])
             self.pahad.append(temp)
 
     def del_bloks(self):
@@ -189,7 +189,7 @@ game.mees = Mees() # peavend
 
 """ level 1 """
 game.create_bloks(10) # viis vastast
-game.create_enemies(20) # kaks vastast, viisakas
+game.create_enemies(25) # kaks vastast, viisakas
 """         """
 
 

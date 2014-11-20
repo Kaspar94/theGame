@@ -83,7 +83,6 @@ class Mees(object): # peamees
     def switchWeapon(self,slot): # vahetab relva
         if(self.relvakogu[slot] == 1): # relv on relvakogus
             self.relv = slot
-            print (self.relv)
         else:
             return
     def drinkPotion(self,pot): # juuakse potti
