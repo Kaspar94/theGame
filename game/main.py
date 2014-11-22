@@ -49,7 +49,7 @@ class Game:
                 "color" : (0,200,0)
             },
             "lykkaja" : {
-                "maxKiirus" : 0.2,
+                "maxKiirus" : 0.5,
                 "w" : 20,
                 "h" : 70,
                 "lykkab" : 200,
@@ -225,7 +225,7 @@ game.mees = Mees() # peavend
 
 """ level 1 """
 game.create_bloks(10) # viis vastast
-game.create_enemies(15) # kaks vastast, viisakas
+game.create_enemies(35) # kaks vastast, viisakas
 """         """
 
 

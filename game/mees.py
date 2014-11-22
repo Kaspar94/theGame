@@ -11,7 +11,7 @@ class Mees(object): # peamees
         self.rect = Rect(30,SCREEN_HEIGHT-100,10,10) # ta kast
         self.color = (255,255,0) # ta varv
 
-        self.speed = 0.5 # kiirus
+        self.speed = 0.8 # kiirus
 
         self.bullets = [] # valjalastud kuulid
         self.bulletCount = 20 # kuulide arv
@@ -134,7 +134,7 @@ class Mees(object): # peamees
         """
         self.lives -= dmg # vahendame elusi dmg vorra
 
-        if(self.lives == 0): # kas oleme surnud?
+        if(self.lives <= 0): # kas oleme surnud?
             # ... siia midagi valja moelda
             print ("gameover")
             self.speed = 0
