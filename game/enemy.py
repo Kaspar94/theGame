@@ -2,6 +2,7 @@ import pygame, random
 from object_functions import *
 from timer import Timer
 from bullet import Bullet
+import math
 class Enemy(object):
     def __init__(self, type):
         """
@@ -24,15 +25,21 @@ class Enemy(object):
     def attack(self,target):
 
         # liigub koguaeg peamehe poole
-        if(self.rect.x < target.rect.x):
+        """if(self.rect.x < target.rect.x):
             self.rect.x += self.speed
         elif(self.rect.x > target.rect.x):
             self.rect.x -= self.speed
         if(self.rect.y < target.rect.y):
             self.rect.y += self.speed
         elif(self.rect.y > target.rect.y):
-            self.rect.y -= self.speed
+            self.rect.y -= self.speed"""
+        self.distance = (target.rect.x - self.rect.x, target.rect.y - self.rect.y) # they did the math
+        self.norm = math.sqrt(self.distance[0] ** 2 + self.distance[1] ** 2)
+        self.direction = (self.distance[0] / self.norm, self.distance[1] / self.norm)
+        self.bullet_vector = (self.direction[0] * self.speed, self.direction[1] * self.speed)
 
+        self.rect.x += self.bullet_vector[0]
+        self.rect.y += self.bullet_vector[1]
         if(self.shooter): # pahalpoisil on relv!
             self.shootTimer.update() # uuendame tulistamis timerit
 
