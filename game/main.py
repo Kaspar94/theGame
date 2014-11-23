@@ -43,7 +43,7 @@ class Game:
         """
         self.blokityyp = {
             "tavaline" : {
-                "maxKiirus" : 0.2, # bloki maksimaalne kiirus
+                "maxKiirus" : 0.1, # bloki maksimaalne kiirus
                 "w" : 50, # laius
                 "h" : 50, # pikkus
                 "lykkab" : 0, # lykkamistugevus
@@ -51,7 +51,7 @@ class Game:
                 "color" : (0,200,0)
             },
             "lykkaja" : {
-                "maxKiirus" : 0.5,
+                "maxKiirus" : 0.1,
                 "w" : 20,
                 "h" : 70,
                 "lykkab" : 200,
@@ -95,6 +95,8 @@ class Game:
 
         self.mouseHolding = False
 
+        self.gaming = False # kui true siis mang kaib, kui ei siis avakeraanil
+
     def update_logic(self):
 
         self.mees.update_logic() # uuendab meest
@@ -124,6 +126,8 @@ class Game:
 
 
     def update_display(self): # uuendab koike mida naidatakse
+
+
         self.screen.fill((255,255,255)) # background
         self.mees.show(game.screen) # peavend
         
@@ -138,6 +142,7 @@ class Game:
         scoretext=self.font.render("Score:"+str(self.level), 1,(0,255,255))
         self.screen.blit(scoretext, (200, 500))
 
+
         self.draw_cursor()
 
         pygame.display.flip()
@@ -145,17 +150,14 @@ class Game:
     def Level(self):
         if(self.levelTimer.end == True):
             self.levelTimer.reset()
-            self.next_level()
+            self.level += 1 # uuendame levelit
+            time.sleep(1)
+            self.mees.relvad[self.mees.relv]["kokku"] += 20
             self.del_bloks()
             self.del_enemies()
             self.create_bloks(self.level*3)
             self.create_enemies(self.level*10)
 
-    def next_level(self):
-        self.level += 1 # uuendame levelit
-        time.sleep(1)
-        self.mees.relvad[self.mees.relv]["kokku"] += 20
-        
     def create_bloks(self,count): # loob uusi blokke
         for i in range(count):
             if(random.randint(1,3) > 1): # yks kolmele et tuleb ull blokk
@@ -183,7 +185,6 @@ class Game:
         mouse = pygame.mouse.get_pos()
         pygame.draw.line(self.screen,(0,0,0),(mouse[0]-10,mouse[1]),(mouse[0]+10,mouse[1]),2)
         pygame.draw.line(self.screen,(0,0,0),(mouse[0],mouse[1]+10),(mouse[0],mouse[1]-10),2)
-
 
     def check_bullets(self): #
         for bullet in self.mees.bullets: # vaatame millega kuulid kokku porkavad :
@@ -233,12 +234,7 @@ class Game:
 
 game = Game(SCREEN_WIDTH, SCREEN_HEIGHT) # peamaang
 game.mees = Mees() # peavend
-
-""" level 1 """
-game.create_bloks(50) # viis vastast
-game.create_enemies(35) # kaks vastast, viisakas
-"""         """
-
+game.create_bloks(4)
 
 while game.run == True: # main loop
     game.levelTimer.update()

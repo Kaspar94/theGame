@@ -54,8 +54,10 @@ class Blokk(object): # tyypiline takistus
 
     def new_crds(self):
         if(self.suund == "hor"): # loome koordinaaid horisontaalselt liikumiseks
+
             self.rect.x = crd_out_x(200) # votame suvad koordinaadid
             self.rect.y = crd_in_y()
+
             if(self.rect.x > 0): # kui kast paremal pool:
                 self.dx = -self.dx # liigume vasakule mitte paremale
         else: # loome koordinaadid vertikaalselt liitkumiseks

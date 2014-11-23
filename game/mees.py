@@ -1,4 +1,5 @@
-import pygame, random
+import pygame
+
 from object_functions import *
 from variables import *
 from bullet import Bullet
@@ -54,11 +55,13 @@ class Mees(object): # peamees
         self.relv = "handgun" # mis relv hetkel
         self.relvakogu = { # 1 kui olemas, 0 kui mitte
             "handgun" : 1,
-            "machinegun" : 1,
-            "pump" : 1
+            "machinegun" : 0,
+            "pump" : 0
         }
 
         self.shootTimer = Timer(1)
+
+        self.koos = []
 
     def update_logic(self):
         self.shootTimer.update()
@@ -90,10 +93,12 @@ class Mees(object): # peamees
             self.relv = slot
         else:
             return
+
     def drinkPotion(self,pot): # juuakse potti
         pass
 
     def shoot(self,start,end,mouseButton):
+        print (self.koos)
         if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0): # pole kuule?
             return
 
@@ -141,9 +146,23 @@ class Mees(object): # peamees
             return True # tagastab true kui null elu, et mang teaks mida edasi teha
         return False
 
+    def squashed(self,blokk):
+        """
+        if not(blokk in self.koos):
+
+            self.koos.append(blokk)
+
+            if(len(self.koos) == 2):
+                suunad = [blokk.suund for blokk in self.koos]
+        """
+
+
+
     def check_collision(self,blokk): # uurib kokkupuudet mehe ja bloki vahel
 
         if(collision(blokk.rect, self.rect)): #kokkuporge MEHE JA BLOKI VAHEL
+
+            self.squashed(blokk)
 
             if(blokk.suund == "hor"): # blokk liigub horisontaalselt
                 # tulles alt voi ylevalt lykkame tagasi
@@ -190,5 +209,9 @@ class Mees(object): # peamees
                         self.rect.y = blokk.rect.y+blokk.rect.h
 
             self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
+
+        else:
+            if(blokk in self.koos): # blokk pole enam mehega koos.
+                self.koos.remove(blokk)
 
 
