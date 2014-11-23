@@ -33,7 +33,7 @@ class Enemy(object):
             self.rect.y += self.speed
         elif(self.rect.y > target.rect.y):
             self.rect.y -= self.speed"""
-
+        #ok
         # parem liikumine?
         self.distance = (target.rect.x - self.rect.x, target.rect.y - self.rect.y) # they did the math
         self.norm = math.sqrt(self.distance[0] ** 2 + self.distance[1] ** 2)
