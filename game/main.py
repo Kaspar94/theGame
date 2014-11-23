@@ -24,6 +24,8 @@ class Game:
 
         pygame.init()
 
+        pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0)) # tavaline hiir n'htamatuks
+
         self.width = WIDTH
         self.height = HEIGHT
         self.screen = pygame.display.set_mode((self.width,self.height))
@@ -135,8 +137,11 @@ class Game:
         #pygame.draw.rect(self.screen, (0,0,0), (0,700,640,10)) # porand
         scoretext=self.font.render("Score:"+str(self.level), 1,(0,255,255))
         self.screen.blit(scoretext, (200, 500))
+
+        self.draw_cursor()
+
         pygame.display.flip()
-        
+
     def Level(self):
         if(self.levelTimer.end == True):
             self.levelTimer.reset()
@@ -173,6 +178,12 @@ class Game:
 
     def del_enemies(self):
         self.pahad = []
+
+    def draw_cursor(self): # joonistab hiire sihiku
+        mouse = pygame.mouse.get_pos()
+        pygame.draw.line(self.screen,(0,0,0),(mouse[0]-10,mouse[1]),(mouse[0]+10,mouse[1]),2)
+        pygame.draw.line(self.screen,(0,0,0),(mouse[0],mouse[1]+10),(mouse[0],mouse[1]-10),2)
+
 
     def check_bullets(self): #
         for bullet in self.mees.bullets: # vaatame millega kuulid kokku porkavad :
@@ -224,7 +235,7 @@ game = Game(SCREEN_WIDTH, SCREEN_HEIGHT) # peamaang
 game.mees = Mees() # peavend
 
 """ level 1 """
-game.create_bloks(10) # viis vastast
+game.create_bloks(50) # viis vastast
 game.create_enemies(35) # kaks vastast, viisakas
 """         """
 
