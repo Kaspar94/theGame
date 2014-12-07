@@ -258,9 +258,12 @@ class Game:
     def generate_random_items(self):
         self.randomItemTimer.update()
         if(self.randomItemTimer.end == True):
-
-
+            potOrWeapon = random.randint(1,3)
+            if(potOrWeapon == 1): # relv
+                self.randomItems.append(random.choice(list(self.mees.relvad.keys())))
+                print (self.randomItems)
             self.randomItemTimer.reset_n(random.randint(10,self.levelTime))
+            self.randomItemTimer.reset()
 
 
 
