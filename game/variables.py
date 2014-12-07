@@ -1,3 +1,3 @@
-SCREEN_WIDTH = 800 # ekraani laius
-SCREEN_HEIGHT = 640 # ekraani pikkus
-levelTime = 300 # kui pikk on yks level
+SCREEN_WIDTH = 1024 # ekraani laius
+SCREEN_HEIGHT = 768 # ekraani pikkus
+levelTime = 20 # kui pikk on yks level

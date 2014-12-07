@@ -10,7 +10,7 @@ class Enemy(object):
         """
 
         self.elusi = type["elusi"] # palju kutil elusi
-        self.rect = Rect(crd_out_x(700), crd_out_y(700), type["w"], type["h"]) # kus kutt spawnib
+        self.rect = Rect(crd_out_x(500), crd_out_y(400), type["w"], type["h"]) # kus kutt spawnib
         self.color = type["color"] # v2rv
         self.speed = type["speed"] # ta kiirus
         self.dmg = type["dmg"] # kuti d2mm kokkuporkel mehega
@@ -19,9 +19,10 @@ class Enemy(object):
         if("weapon" in type): # kui kutil on relv
             self.shooter = True # ikka on laskja
             self.shootTimer = Timer(type["delay"]) # mitme sekundi tagant kuulid lendama hakkavad.
+            self.shootTimer.run()
             self.bullets = []
 
-        
+        self.font=pygame.font.Font(None,27)
     def attack(self,target):
 
         # liigub koguaeg peamehe poole
@@ -59,7 +60,8 @@ class Enemy(object):
     def show(self, scr): # joonistame valja
         if(rect_in_map(self.rect)): # kontrollime kas objekt mapi sees et mitte teha asjatuid joonistamisi.
             pygame.draw.rect(scr, self.color, self.rect.get())
-
+            self.livesText=self.font.render(str(self.elusi), 1,(0,0,0))
+            scr.blit(self.livesText, (self.rect.x, self.rect.y))
         if(self.shooter):
             for bullet in self.bullets:
                 bullet.show(scr)

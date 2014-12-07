@@ -10,7 +10,7 @@ class Mees(object): # peamees
     def __init__(self):
         self.lives = 7 # mitu elu mehel
         self.rect = Rect(30,SCREEN_HEIGHT-100,10,10) # ta kast
-        self.color = (255,255,0) # ta varv
+        self.color = (0,0,0) # ta varv
 
         self.speed = 0.8 # kiirus
 
@@ -51,16 +51,24 @@ class Mees(object): # peamees
                   "vahe" : 0.2 # kuulide laskmis vahe ajaliselt automaatselt(kui hoida == 1)
                }
         }
+        self.potid = {
+            0 :
+                {
+                    "heals" : 2
+                },
+            1 :
+                {
+                    "heals" : 5
+                }
+        }
         
         self.relv = "handgun" # mis relv hetkel
-        self.relvakogu = { # 1 kui olemas, 0 kui mitte
-            "handgun" : 1,
-            "machinegun" : 0,
-            "pump" : 0
-        }
+
+        self.relvakogu = ["handgun","pump"]
+        self.potikogu = []
 
         self.shootTimer = Timer(1)
-
+        self.shootTimer.run()
         self.koos = []
 
     def update_logic(self):
@@ -89,16 +97,22 @@ class Mees(object): # peamees
             bullet.show(scr)
 
     def switchWeapon(self,slot): # vahetab relva
-        if(self.relvakogu[slot] == 1): # relv on relvakogus
-            self.relv = slot
-        else:
+        try:
+            self.relv = self.relvakogu[slot]
+        except Exception as e:
+            print (e)
             return
 
-    def drinkPotion(self,pot): # juuakse potti
-        pass
+    def drinkPotion(self,slot): # juuakse potti
+        try:
+            pot = self.potikogu[slot]
+            if "heals" in pot:
+                self.lives += pot["heals"]
+        except Exception as e:
+            print (e)
+            return
 
     def shoot(self,start,end,mouseButton):
-        print (self.koos)
         if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0): # pole kuule?
             return
 
@@ -141,28 +155,14 @@ class Mees(object): # peamees
 
         if(self.lives <= 0): # kas oleme surnud?
             # ... siia midagi valja moelda
-            print ("gameover")
+            # print ("gameover")
             self.speed = 0
             return True # tagastab true kui null elu, et mang teaks mida edasi teha
         return False
 
-    def squashed(self,blokk):
-        """
-        if not(blokk in self.koos):
-
-            self.koos.append(blokk)
-
-            if(len(self.koos) == 2):
-                suunad = [blokk.suund for blokk in self.koos]
-        """
-
-
-
     def check_collision(self,blokk): # uurib kokkupuudet mehe ja bloki vahel
 
         if(collision(blokk.rect, self.rect)): #kokkuporge MEHE JA BLOKI VAHEL
-
-            self.squashed(blokk)
 
             if(blokk.suund == "hor"): # blokk liigub horisontaalselt
                 # tulles alt voi ylevalt lykkame tagasi
@@ -210,8 +210,5 @@ class Mees(object): # peamees
 
             self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
 
-        else:
-            if(blokk in self.koos): # blokk pole enam mehega koos.
-                self.koos.remove(blokk)
 
 

@@ -24,12 +24,14 @@ class Game:
 
         pygame.init()
 
-        pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0)) # tavaline hiir n'htamatuks
-
         self.width = WIDTH
         self.height = HEIGHT
         self.screen = pygame.display.set_mode((self.width,self.height))
+        pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0)) # tavaline hiir n'htamatuks
+        self.welcomeScreen = pygame.image.load('gameAvaekraan.png').convert()
+        self.pauseScreen = pygame.image.load('paused.png').convert_alpha()
 
+        self.bgcolor = (255,255,255)
         #pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         #pygame.mixer.music.load('madis.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS 
         #pygame.mixer.music.play(-1)  # mitu korda m'ngib
@@ -41,9 +43,10 @@ class Game:
         lykkab - mitu pixlit lykkab eemale kokkuporkel
         dmg - mitu dmg teeb lykkamisega
         """
+
         self.blokityyp = {
             "tavaline" : {
-                "maxKiirus" : 0.1, # bloki maksimaalne kiirus
+                "maxKiirus" : 0.2, # bloki maksimaalne kiirus
                 "w" : 50, # laius
                 "h" : 50, # pikkus
                 "lykkab" : 0, # lykkamistugevus
@@ -51,7 +54,7 @@ class Game:
                 "color" : (0,200,0)
             },
             "lykkaja" : {
-                "maxKiirus" : 0.1,
+                "maxKiirus" : 0.5,
                 "w" : 20,
                 "h" : 70,
                 "lykkab" : 200,
@@ -89,15 +92,26 @@ class Game:
 
         self.level = 1
 
-        self.levelTimer = Timer(levelTime)
+        self.levelTime = levelTime
+        self.levelTimer = Timer(self.levelTime)
 
         self.run = True
 
         self.mouseHolding = False
 
-        self.gaming = False # kui true siis mang kaib, kui ei siis avakeraanil
+        self.gaming = False
+
+        self.randomItems = []
+
+        self.randomItemTimer = Timer(random.randint(10,self.levelTime-10))
+        self.randomItemTimer.run()
 
     def update_logic(self):
+
+        if not self.gaming: # kui oleme avalehel voi kuskil mojal
+            return
+
+        self.generate_random_items()
 
         self.mees.update_logic() # uuendab meest
 
@@ -124,40 +138,54 @@ class Game:
                     pass
                 self.pahad.remove(enemy) # paha ohverdas kahjuks end :(
 
+        if(len(self.pahad) <= 10):
+            self.create_enemies(10*self.level)
 
     def update_display(self): # uuendab koike mida naidatakse
 
+        if self.gaming == True:
+            self.screen.fill(self.bgcolor) # background
 
-        self.screen.fill((255,255,255)) # background
-        self.mees.show(game.screen) # peavend
-        
-        for blokk in self.blokid: # joonistame koik blokid
-            blokk.show(self.screen)
-            
-        for enemy in self.pahad: # joonistame koik pahad
-            enemy.show(self.screen)
+            self.mees.show(game.screen) # peavend
 
-        # muu lape
-        #pygame.draw.rect(self.screen, (0,0,0), (0,700,640,10)) # porand
-        scoretext=self.font.render("Score:"+str(self.level), 1,(0,255,255))
-        self.screen.blit(scoretext, (200, 500))
+            for blokk in self.blokid: # joonistame koik blokid
+                blokk.show(self.screen)
 
+            for enemy in self.pahad: # joonistame koik pahad
+                enemy.show(self.screen)
+
+
+            scoretext=self.font.render("Score:"+str(self.level), 1,(0,255,255))
+            self.screen.blit(scoretext, (200, 700))
+            for i,slot in enumerate(self.mees.relvakogu):
+                if(game.mees.relv==slot):
+                    self.slotColor = (255,0,255)
+                else:
+                    self.slotColor = (0,0,0)
+                self.slots = self.font.render(str(i+1)+" "+str(slot), 1,self.slotColor)
+                self.screen.blit(self.slots, (200+i*100,500))
+            if(self.levelTimer.paused == 1): # m2ng pausitud, n2itame pausi pilti
+                self.screen.blit(self.pauseScreen,(0,0))
+        else:
+            self.screen.blit(self.welcomeScreen,(0,0))
 
         self.draw_cursor()
-
         pygame.display.flip()
-
+        
     def Level(self):
         if(self.levelTimer.end == True):
             self.levelTimer.reset()
-            self.level += 1 # uuendame levelit
-            time.sleep(1)
-            self.mees.relvad[self.mees.relv]["kokku"] += 20
+            self.next_level()
             self.del_bloks()
             self.del_enemies()
-            self.create_bloks(self.level*3)
+            self.create_bloks(self.level*20)
             self.create_enemies(self.level*10)
 
+    def next_level(self):
+        self.level += 1 # uuendame levelit
+        time.sleep(1)
+        self.mees.relvad[self.mees.relv]["kokku"] += 20
+        
     def create_bloks(self,count): # loob uusi blokke
         for i in range(count):
             if(random.randint(1,3) > 1): # yks kolmele et tuleb ull blokk
@@ -181,14 +209,8 @@ class Game:
     def del_enemies(self):
         self.pahad = []
 
-    def draw_cursor(self): # joonistab hiire sihiku
-        mouse = pygame.mouse.get_pos()
-        pygame.draw.line(self.screen,(0,0,0),(mouse[0]-10,mouse[1]),(mouse[0]+10,mouse[1]),2)
-        pygame.draw.line(self.screen,(0,0,0),(mouse[0],mouse[1]+10),(mouse[0],mouse[1]-10),2)
-
     def check_bullets(self): #
         for bullet in self.mees.bullets: # vaatame millega kuulid kokku porkavad :
-
             if not(rect_in_map(bullet.rect)): # kustutame kuuli kui see poel enam mapi piires.wd
                 if(bullet in self.mees.bullets): # mingi lamp
                     self.mees.bullets.remove(bullet)
@@ -227,6 +249,18 @@ class Game:
                         self.mees.getRekt(bullet.dmg)
                         enemy.bullets.remove(bullet) # kui jah siis kustutame kuuli.
 
+    def draw_cursor(self): # joonistab hiire sihiku
+        mouse = pygame.mouse.get_pos()
+        self.mouseLineLen = 10
+        pygame.draw.line(self.screen,(0,0,0),(mouse[0]-self.mouseLineLen,mouse[1]),(mouse[0]+self.mouseLineLen,mouse[1]),2)
+        pygame.draw.line(self.screen,(0,0,0),(mouse[0],mouse[1]+self.mouseLineLen),(mouse[0],mouse[1]-self.mouseLineLen),2)
+
+    def generate_random_items(self):
+        self.randomItemTimer.update()
+        if(self.randomItemTimer.end == True):
+
+
+            self.randomItemTimer.reset_n(random.randint(10,self.levelTime))
 
 
 
@@ -234,29 +268,38 @@ class Game:
 
 game = Game(SCREEN_WIDTH, SCREEN_HEIGHT) # peamaang
 game.mees = Mees() # peavend
-game.create_bloks(4)
+
+""" level 1 """
+game.create_bloks(10) # viis vastast
+game.create_enemies(15) # kaks vastast, viisakas
+"""         """
+
 
 while game.run == True: # main loop
     game.levelTimer.update()
     #EVENT
     for evt in pygame.event.get(): # koik eventid
         if evt.type == pygame.KEYDOWN:
+            if evt.key == pygame.K_RETURN:
+                game.gaming = True
+            if not game.gaming: # 2rme vaata teisi evente kui m2ng ei k2i.
+                continue
             if evt.key == pygame.K_p:
                 game.levelTimer.pauseChange()
             elif evt.key == pygame.K_1:
-                game.mees.switchWeapon("handgun")
+                game.mees.switchWeapon(0)
             elif evt.key == pygame.K_2:
-                game.mees.switchWeapon("pump")
+                game.mees.switchWeapon(1)
             elif evt.key == pygame.K_3:
-                game.mees.switchWeapon("machinegun")
+                game.mees.switchWeapon(2)
             elif evt.key == pygame.K_4:
-                game.mees.switchWeapon("")
+                game.mees.switchWeapon(3)
             elif evt.key == pygame.K_5:
-                game.mees.switchWeapon("")
+                game.mees.switchWeapon(4)
             elif evt.key == pygame.K_6:
-                game.mees.drinkPotion("defense")
+                game.mees.drinkPotion(0)
             elif evt.key == pygame.K_7:
-                game.mees.drinkPotion("speed")
+                game.mees.drinkPotion(1)
         elif evt.type == pygame.QUIT: # kasutaja soovib lahkuda
             game.run = False
         elif evt.type == pygame.MOUSEBUTTONDOWN:
@@ -267,24 +310,24 @@ while game.run == True: # main loop
             if(game.levelTimer.paused == -1):
                 game.mouseHolding = False
         
-    if(game.levelTimer.paused == 1):
-        continue
-    keys = pygame.key.get_pressed()
-    if(keys[pygame.K_a]):
-        game.mees.rect.x -= game.mees.speed
-    if(keys[pygame.K_d]):
-        game.mees.rect.x += game.mees.speed
-    if(keys[pygame.K_w]):
-        game.mees.rect.y -= game.mees.speed
-    if(keys[pygame.K_s]):
-        game.mees.rect.y += game.mees.speed
+    if(game.levelTimer.paused != 1 and game.gaming): # kui m2ng pausitud voi avaekraanil, ei tee midagi
+
+        keys = pygame.key.get_pressed()
+        if(keys[pygame.K_a]):
+            game.mees.rect.x -= game.mees.speed
+        if(keys[pygame.K_d]):
+            game.mees.rect.x += game.mees.speed
+        if(keys[pygame.K_w]):
+            game.mees.rect.y -= game.mees.speed
+        if(keys[pygame.K_s]):
+            game.mees.rect.y += game.mees.speed
 
             
-    #LOGIC
-    
-    game.update_logic()
-    
-    game.Level()
+        #LOGIC
+
+        game.update_logic()
+
+        game.Level()
         
     #DISPLAY
         

@@ -5,6 +5,7 @@ class Timer:
         self.paused = -1
         self.c = countdown*1000 # muudame sekundid millisekunditeks
         self.reset()
+        self.running = False
     def update(self):
         if(self.running == True):
             if(self.paused == -1): # pole pausil
@@ -19,7 +20,8 @@ class Timer:
                     self.pauseStart = pygame.time.get_ticks()
     def pauseChange(self):
         self.paused = -self.paused
-
+    def run(self):
+        self.running = True
     def reset_n(self,n):
         self.c = n*1000
     def reset(self):
