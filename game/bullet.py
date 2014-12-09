@@ -20,7 +20,7 @@ class Bullet(object):
         self.norm = math.sqrt(self.distance[0] ** 2 + self.distance[1] ** 2)
         self.direction = (self.distance[0] / self.norm, self.distance[1] / self.norm)
         self.bullet_vector = (self.direction[0] * self.speed, self.direction[1] * self.speed)
-        self.color = self.color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
+        self.color = (0,0,0)
         
     def update_logic(self):
         self.rect.x += self.bullet_vector[0]

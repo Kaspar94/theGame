@@ -21,12 +21,14 @@ class Blokk(object): # tyypiline takistus
         self.h = tyyp["h"]
         self.lykkab = tyyp["lykkab"]
         self.dmg = tyyp["dmg"]
-        self.color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
+        self.color = tyyp["color"] # v2rv
+        #self.image = tyyp["image"]
+        #self.img = pygame.transform.scale((pygame.image.load(tyyp["image"]).convert()), ((tyyp["w"]),(tyyp["h"])))
         self.rect = Rect(0,0,0,0) # loome ymbrise
         self.new_crds()
         self.new_shape()
-    def update_logic(self):
 
+    def update_logic(self):
         if (((self.suund == "hor") and (self.rect.x+self.rect.w < 0 and self.dx < 0 or self.rect.x-self.rect.w > SCREEN_WIDTH  and self.dx > 0))\
             or (self.suund == "ver") and (self.rect.y+self.rect.h < 0 and self.dy < 0 or self.rect.y-self.rect.h > SCREEN_HEIGHT and self.dy > 0)):
                 # kui kast jookseb valja mapist
@@ -38,6 +40,7 @@ class Blokk(object): # tyypiline takistus
 
     def show(self, scr): # n2itab
         if(rect_in_map(self.rect)): # kontrollime kas objekt mapi sees et mitte teha asjatuid joonistamisi.
+            #self.show(self.img)####################################################################
             pygame.draw.rect(scr, self.color ,self.rect.get())
 
     def new_shape(self): # loob uue kuju blokile
@@ -54,10 +57,8 @@ class Blokk(object): # tyypiline takistus
 
     def new_crds(self):
         if(self.suund == "hor"): # loome koordinaaid horisontaalselt liikumiseks
-
             self.rect.x = crd_out_x(200) # votame suvad koordinaadid
             self.rect.y = crd_in_y()
-
             if(self.rect.x > 0): # kui kast paremal pool:
                 self.dx = -self.dx # liigume vasakule mitte paremale
         else: # loome koordinaadid vertikaalselt liitkumiseks
