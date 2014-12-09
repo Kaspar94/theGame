@@ -3,7 +3,7 @@ from object_functions import *
 import pygame
 import random
 class RandomItem():
-    def __init__(self):
+    def __init__(self,relvad,potid):
         self.rect = Rect(crd_in_x(),crd_in_y(),10,10)
 
         self.font=pygame.font.Font(None,30)
@@ -11,6 +11,13 @@ class RandomItem():
         self.timer = Timer(random.randint(5,15))
         self.timer.run()
 
+        typeRandom = random.randint(1,5)
+        if(typeRandom > 1):
+            self.type = "pot"
+            self.value = random.choice(list(potid.keys()))
+        else:
+            self.type = "weapon"
+            self.value = random.choice(list(relvad.keys()))
     def update(self):
         self.timer.update()
 
@@ -24,4 +31,7 @@ class RandomItem():
             return True
         else:
             return False
+
+
+
 

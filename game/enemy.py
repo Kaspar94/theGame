@@ -24,18 +24,6 @@ class Enemy(object):
 
         self.font=pygame.font.Font(None,27)
     def attack(self,target):
-
-        # liigub koguaeg peamehe poole
-        """if(self.rect.x < target.rect.x):
-            self.rect.x += self.speed
-        elif(self.rect.x > target.rect.x):
-            self.rect.x -= self.speed
-        if(self.rect.y < target.rect.y):
-            self.rect.y += self.speed
-        elif(self.rect.y > target.rect.y):
-            self.rect.y -= self.speed"""
-        #ok
-        # parem liikumine?
         self.distance = (target.rect.x - self.rect.x, target.rect.y - self.rect.y) # they did the math
         self.norm = math.sqrt(self.distance[0] ** 2 + self.distance[1] ** 2)
         self.direction = (self.distance[0] / self.norm, self.distance[1] / self.norm)
@@ -78,7 +66,7 @@ class Enemy(object):
         temp = Bullet(self.rect.x,self.rect.y,end[0],end[1])
         self.bullets.append(temp)
 
-    def check_collision(self,blokk):
+    def check_collision(self,blokk): # ???
         if(collision(self.rect,blokk.rect)):
             if(blokk.suund == "hor"): # blokk liigub horisontaalselt
                 # tulles alt voi ylevalt lykkame tagasi

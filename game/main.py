@@ -130,6 +130,8 @@ class Game:
 
         self.check_bullets() # uuendab v2lja lastud kuulidega seotud loogikat
 
+        self.man_item_collision()
+
         for enemy in game.pahad:
             enemy.attack(self.mees) # lape
 
@@ -270,11 +272,17 @@ class Game:
                 self.randomItems.remove(item)
 
         if(self.randomItemTimer.end == True): # kui aeg saab otsa loome uue asja
-            temp = RandomItem()
+            temp = RandomItem(self.mees.relvad,self.mees.potid)
             self.randomItems.append(temp)
             self.randomItemTimer.reset_n(random.randint(10,self.levelTime)) # uus suvaline countdown
             self.randomItemTimer.reset()
 
+    def man_item_collision(self):
+        for item in self.randomItems:
+            if(collision(self.mees.rect,item.rect)): # kokkuporge mingi asjaga
+                mees.pickup(item)
+                if(item in self.randomItems): # korjame yles, kaotame maast
+                    self.randomItems.remove(item)
 
 
 

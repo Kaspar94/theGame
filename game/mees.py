@@ -210,5 +210,7 @@ class Mees(object): # peamees
 
             self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
 
-
+    def pickUp(self,item):
+        if(item.type=="pot"):
+            self.potikogu.append()
 
