@@ -33,9 +33,9 @@ class Game:
 
         self.background = pygame.transform.scale((pygame.image.load("Pics/spacev1.png").convert()), (1024,768))
         self.bg_imgRect = self.background.get_rect()
-        #pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
-        #pygame.mixer.music.load('madis.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS 
-        #pygame.mixer.music.play(-1)  # maitu korda m'ngib
+        pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
+        pygame.mixer.music.load('Music/madis.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS
+        pygame.mixer.music.play(-1)  # maitu korda m'ngib
 
         """
         kiirus - bloki kiirus
@@ -83,6 +83,17 @@ class Game:
                 "dmg" : 2,
                 "weapon" : 1,
                 "delay" : 1
+            },
+            "boss" : {
+                "boss" : 1,
+                "elusi" : 10,
+                "w" : 200,
+                "h" : 200,
+                "color" : (125,0,255),
+                "speed" : 0.1,
+                "dmg" : 1000,
+                "weapon" : 1,
+                "delay" : 1
             }
         }
 
@@ -104,8 +115,11 @@ class Game:
 
         self.randomItems = []
 
+        # timer mis hakkab random aja tagant maha asju genereerima
         self.randomItemTimer = Timer(random.randint(10,self.levelTime*2))
         self.randomItemTimer.run()
+
+        self.bossInit = False # alguses pole bossi
 
     def update_logic(self):
 
@@ -142,8 +156,8 @@ class Game:
                     pass
                 self.pahad.remove(enemy) # paha ohverdas kahjuks end :(
 
-        if(len(self.pahad) <= 10):
-            self.create_enemies(10*self.level)
+        #if(len(self.pahad) <= 10):
+        #    self.create_enemies(10*self.level)
 
     def update_display(self): # uuendab koike mida naidatakse
 
@@ -185,16 +199,27 @@ class Game:
         
     def Level(self):
         if(self.levelTimer.end == True):
-            self.levelTimer.reset()
-            self.next_level()
-            self.del_bloks()
-            self.del_enemies()
+            if(self.bossInit == False):
+                print ("init boss")
+                self.del_bloks()
+                self.del_enemies()
+                boss = Enemy(self.enemytype["boss"])
+                self.pahad.append(boss)
+                self.bossInit = True
+            else:
+                if(len(self.pahad) == 0):
+                    print ("p")
+                    self.bossInit = False
+                    self.levelTimer.reset()
+                    self.next_level()
+
             #self.create_bloks(self.level*20)
             #self.create_enemies(self.level*10)
 
     def next_level(self):
         self.level += 1 # uuendame levelit
-        
+        self.create_bloks(self.level*5)
+        self.create_enemies(self.level*15)
     def create_bloks(self,count): # loob uusi blokke
         for i in range(count):
             if(random.randint(1,3) > 1): # yks kolmele et tuleb ull blokk
@@ -234,7 +259,15 @@ class Game:
             for enemy in self.pahad: # pahade poistega ?
                 if(collision(bullet.rect, enemy.rect)):
                     if (enemy.getRekt(bullet.dmg)):
+                        if("boss" in enemy.type):
+                            miniBoss = Enemy(enemy.type.copy(),True,enemy.rect.x-enemy.rect.w/2,enemy.rect.y-enemy.rect.h/2)
+                            miniBoss2 = Enemy(enemy.type.copy(),True,enemy.rect.x+enemy.rect.w/2,enemy.rect.y+enemy.rect.h/2)
+                            if(miniBoss.rect.h > 10): # kontrollime et liiga mini poleks
+                                self.pahad.append(miniBoss)
+                                self.pahad.append(miniBoss2)
+                            print (len(self.pahad))
                         self.pahad.remove(enemy)
+
                     if(bullet in self.mees.bullets): # mingi lamp
                         self.mees.bullets.remove(bullet)
 
@@ -260,7 +293,7 @@ class Game:
 
     def draw_cursor(self): # joonistab hiire sihiku
         mouse = pygame.mouse.get_pos()
-        self.mouseLineLen = 10
+        self.mouseLineLen = 20
         self.mouseColor = (255,255,255)
         pygame.draw.line(self.screen,(self.mouseColor),(mouse[0]-self.mouseLineLen,mouse[1]),(mouse[0]+self.mouseLineLen,mouse[1]),2)
         pygame.draw.line(self.screen,(self.mouseColor),(mouse[0],mouse[1]+self.mouseLineLen),(mouse[0],mouse[1]-self.mouseLineLen),2)

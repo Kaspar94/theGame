@@ -23,11 +23,11 @@ class Mees(object): # peamees
         self.relvad = {
             "handgun" :
                 { "dmg" : 1, # palju relv dmg teeb
-                  "speed" : 2, # kui kiirelt kuul lendab
+                  "speed" : 2, # kui kiirelt kuul lendabs
                   "hoida" : 0, # kas automaat
                   "bullets" : 12, # palju kuule
                   "pide" : 12, # palju pide hoiab
-                  "kokku" : 48 # palju kokku kuule
+                  "kokku" : -1 # palju kokku kuule
                 },
             "machinegun" :
                 { "dmg" : 1,
@@ -111,7 +111,7 @@ class Mees(object): # peamees
             return
 
     def shoot(self,start,end,mouseButton):
-        if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0): # pole kuule?
+        if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0 and self.relvad[self.relv]["kokku"] != -1): # pole kuule?
             return
 
         temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])

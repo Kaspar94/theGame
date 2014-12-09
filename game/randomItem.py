@@ -13,16 +13,16 @@ class RandomItem():
         self.relvad = relvad
         self.potid = potid
         typeRandom = random.randint(1,20)
-        if(typeRandom<3):
+        if(typeRandom<=5):
             self.type = "weapon"
             self.value = random.choice(list(relvad.keys()))
-        elif(typeRandom > 2 and typeRandom < 15):
+        elif(typeRandom > 5 and typeRandom < 15):
             self.type = "pot"
             self.value = random.choice(list(potid.keys()))
         else:
             self.type = "bullets"
             self.weaponType = random.choice(list(relvad.keys())) # pump
-            self.value = self.relvad[self.weaponType]["pide"]*random.randint(1,3)
+            self.value = self.relvad[self.weaponType]["pide"]*random.randint(1,5)
     def update(self):
         self.timer.update()
 

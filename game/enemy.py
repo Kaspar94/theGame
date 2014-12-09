@@ -4,25 +4,33 @@ from timer import Timer
 from bullet import Bullet
 import math
 class Enemy(object):
-    def __init__(self, type):
+    def __init__(self, type, miniboss=False, crd_x=False,crd_y=False):
         """
         hello, im a bad guy
         """
-
-        self.elusi = type["elusi"] # palju kutil elusi
-        self.rect = Rect(crd_out_x(500), crd_out_y(400), type["w"], type["h"]) # kus kutt spawnib
-        self.color = type["color"] # v2rv
-        self.speed = type["speed"] # ta kiirus
-        self.dmg = type["dmg"] # kuti d2mm kokkuporkel mehega
+        self.type = type
+        self.elusi = self.type["elusi"] # palju kutil elusi
+        self.x = crd_out_x(500)
+        self.y = crd_out_y(400)
+        if(miniboss and crd_x != False and crd_y != False):
+            self.type["w"] /= 2
+            self.type["h"] /= 2
+            self.x = crd_x
+            self.y = crd_y
+        self.rect = Rect(self.x, self.y, self.type["w"], self.type["h"]) # kus kutt spawnib
+        self.color = self.type["color"] # v2rv
+        self.speed = self.type["speed"] # ta kiirus
+        self.dmg = self.type["dmg"] # kuti d2mm kokkuporkel mehega
         self.shooter = False # eeldame et pole laskja
 
         if("weapon" in type): # kui kutil on relv
             self.shooter = True # ikka on laskja
-            self.shootTimer = Timer(type["delay"]) # mitme sekundi tagant kuulid lendama hakkavad.
+            self.shootTimer = Timer(self.type["delay"]) # mitme sekundi tagant kuulid lendama hakkavad.
             self.shootTimer.run()
             self.bullets = []
 
         self.font=pygame.font.Font(None,27)
+
     def attack(self,target):
         self.distance = (target.rect.x - self.rect.x, target.rect.y - self.rect.y) # they did the math
         self.norm = math.sqrt(self.distance[0] ** 2 + self.distance[1] ** 2)
