@@ -31,7 +31,7 @@ class Mees(object): # peamees
                 },
             "machinegun" :
                 { "dmg" : 1,
-                  "speed" : 3,
+                  "speed" : 4,
                   "hoida" : 1,
                   "bullets" : 50,
                   "pide" : 50,
@@ -61,7 +61,7 @@ class Mees(object): # peamees
 
         self.relv = "handgun" # mis relv hetkel
 
-        self.relvakogu = ["handgun"]
+        self.relvakogu = ["handgun","machinegun"]
         self.potikogu = []
 
         self.shootTimer = Timer(1)
@@ -209,7 +209,7 @@ class Mees(object): # peamees
 
     def pickup(self,item):
         if(item.type=="pot"):
-            if(len(self.potikogu) <= 2):
+            if(len(self.potikogu) < 2):
                 self.potikogu.append(item.value)
                 return True
         elif(item.type=="weapon"):

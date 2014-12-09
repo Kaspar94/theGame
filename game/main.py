@@ -16,7 +16,7 @@ from variables import *
 from randomItem import RandomItem
 
 class Game:
-    def __init__(self, WIDTH, HEIGHT):
+    def __init__(self, REALWIDTH, REALHEIGHT, GAMEWIDTH, GAMEHEIGHT):
         """
         peaklass
         """
@@ -24,9 +24,11 @@ class Game:
 
         pygame.init()
 
-        self.width = WIDTH
-        self.height = HEIGHT
-        self.screen = pygame.display.set_mode((self.width,self.height))
+        self.width = GAMEWIDTH
+        self.height = GAMEHEIGHT
+        self.realwidth = REALWIDTH
+        self.realheight = REALHEIGHT
+        self.screen = pygame.display.set_mode((self.realwidth,self.realheight))
         pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0)) # tavaline hiir n'htamatuks
         self.welcomeScreen = pygame.image.load('Pics/gameAvaekraan.png').convert()
         self.pauseScreen = pygame.image.load('Pics/paused.png').convert_alpha()
@@ -35,8 +37,8 @@ class Game:
         self.bg_imgRect = self.background.get_rect()
         pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         pygame.mixer.music.load('Music/madis.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS
-        pygame.mixer.music.play(-1)  # maitu korda m'ngib
-
+        #pygame.mixer.music.play(-1)  # maitu korda m'ngib
+        self.music_playing = 1
         """
         kiirus - bloki kiirus
         maxw - maksimaalne laius
@@ -86,7 +88,7 @@ class Game:
             },
             "boss" : {
                 "boss" : 1,
-                "elusi" : 10,
+                "elusi" : 1,
                 "w" : 200,
                 "h" : 200,
                 "color" : (125,0,255),
@@ -175,20 +177,8 @@ class Game:
             for item in self.randomItems: #joonistame maas olevaid boonus asju
                 item.show(self.screen)
 
-            scoretext=self.font.render("Score:"+str(self.level), 1,(0,255,255))
-            self.screen.blit(scoretext, (200, 700))
-            scoretext2=self.font.render("Score:"+str(self.levelTimer.get_secs()), 1,(0,255,255))
-            self.screen.blit(scoretext2, (300, 700))
-            for i,slot in enumerate(self.mees.relvakogu):
-                if(game.mees.relv==slot):
-                    self.slotColor = (255,0,255)
-                else:
-                    self.slotColor = (0,0,0)
-                self.slots = self.font.render(str(i+1)+" "+str(slot), 1,self.slotColor)
-                self.screen.blit(self.slots, (200+i*100,500))
-            for i,slot in enumerate(self.mees.potikogu):
-                self.slots = self.font.render(str(i+6)+" "+str(slot), 1,(0,0,0))
-                self.screen.blit(self.slots, (500+i*100,500))
+            self.draw_text()
+
             if(self.levelTimer.paused == 1): # m2ng pausitud, n2itame pausi pilti
                 self.screen.blit(self.pauseScreen,(0,0))
         else:
@@ -196,7 +186,24 @@ class Game:
 
         self.draw_cursor()
         pygame.display.flip()
-        
+
+    def draw_text(self):
+        scoretext=self.font.render("Level:"+str(self.level), 1,(0,255,255))
+        self.screen.blit(scoretext, (200, 700))
+        scoretext2=self.font.render("Time left:"+str(self.levelTimer.get_secs()), 1,(0,255,255))
+        self.screen.blit(scoretext2, (300, 700))
+        for i,slot in enumerate(self.mees.relvakogu):
+            if(game.mees.relv==slot):
+                self.slotColor = (255,0,255)
+            else:
+                self.slotColor = (125,255,0)
+            self.slots = self.font.render(str(i+1)+" "+str(slot), 1,self.slotColor)
+            self.screen.blit(self.slots, (200+i*100,500))
+        for i,slot in enumerate(self.mees.potikogu):
+            self.slots = self.font.render(str(i+6)+" "+str(slot), 1,(125,255,0))
+            self.screen.blit(self.slots, (500+i*100,500))
+
+        pygame.draw.rect(self.screen,(125,125,125),(0,self.height+10,self.width,self.realheight-self.height))
     def Level(self):
         if(self.levelTimer.end == True):
             if(self.bossInit == False):
@@ -204,6 +211,9 @@ class Game:
                 self.del_bloks()
                 self.del_enemies()
                 boss = Enemy(self.enemytype["boss"])
+                boss.rect.w,boss.rect.h = (self.level*100,self.level*100)
+                boss.type["h"] = (self.level*100)
+                boss.type["w"] = (self.level*100)
                 self.pahad.append(boss)
                 self.bossInit = True
             else:
@@ -262,6 +272,7 @@ class Game:
                         if("boss" in enemy.type):
                             miniBoss = Enemy(enemy.type.copy(),True,enemy.rect.x-enemy.rect.w/2,enemy.rect.y-enemy.rect.h/2)
                             miniBoss2 = Enemy(enemy.type.copy(),True,enemy.rect.x+enemy.rect.w/2,enemy.rect.y+enemy.rect.h/2)
+                            print (miniBoss.rect.h)
                             if(miniBoss.rect.h > 10): # kontrollime et liiga mini poleks
                                 self.pahad.append(miniBoss)
                                 self.pahad.append(miniBoss2)
@@ -310,7 +321,7 @@ class Game:
         if(self.randomItemTimer.end == True): # kui aeg saab otsa loome uue asja
             temp = RandomItem(self.mees.relvad,self.mees.potid)
             self.randomItems.append(temp)
-            self.randomItemTimer.reset_n(random.randint(20,self.levelTime*2)) # uus suvaline countdown
+            self.randomItemTimer.reset_n(random.randint(2,self.levelTime*2)) # uus suvaline countdown
             self.randomItemTimer.reset()
 
     def man_item_collision(self):
@@ -323,7 +334,7 @@ class Game:
 
 
 
-game = Game(REAL_SCREEN_WIDTH, REAL_SCREEN_HEIGHT) # peamaang
+game = Game(REAL_SCREEN_WIDTH,REAL_SCREEN_HEIGHT,SCREEN_WIDTH, SCREEN_HEIGHT) # peamaang
 game.mees = Mees() # peavend
 
 """ level 1 """
@@ -343,6 +354,13 @@ while game.run == True: # main loop
         if evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_RETURN:
                 game.gaming = True
+            if evt.key == pygame.K_m:
+                if(game.music_playing == 1):
+                    pygame.mixer.music.pause()
+                    game.music_playing = -1
+                else:
+                    pygame.mixer.music.unpause()
+                    game.music_playing = 1
             if not game.gaming: # 2rme vaata teisi evente kui m2ng ei k2i.
                 continue
             if evt.key == pygame.K_p:
