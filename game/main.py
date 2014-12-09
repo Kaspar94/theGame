@@ -31,10 +31,11 @@ class Game:
         self.welcomeScreen = pygame.image.load('Pics/gameAvaekraan.png').convert()
         self.pauseScreen = pygame.image.load('Pics/paused.png').convert_alpha()
 
-        self.bgcolor = (255,255,255)
+        self.background = pygame.transform.scale((pygame.image.load("Pics/spacev1.png").convert()), (1024,768))
+        self.bg_imgRect = self.background.get_rect()
         #pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         #pygame.mixer.music.load('madis.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS 
-        #pygame.mixer.music.play(-1)  # mitu korda m'ngib
+        #pygame.mixer.music.play(-1)  # maitu korda m'ngib
 
         """
         kiirus - bloki kiirus
@@ -147,7 +148,7 @@ class Game:
     def update_display(self): # uuendab koike mida naidatakse
 
         if self.gaming == True:
-            self.screen.fill(self.bgcolor) # background
+            self.screen.blit(self.background, self.bg_imgRect)
 
             self.mees.show(self.screen) # peavend
 
@@ -260,8 +261,9 @@ class Game:
     def draw_cursor(self): # joonistab hiire sihiku
         mouse = pygame.mouse.get_pos()
         self.mouseLineLen = 10
-        pygame.draw.line(self.screen,(0,0,0),(mouse[0]-self.mouseLineLen,mouse[1]),(mouse[0]+self.mouseLineLen,mouse[1]),2)
-        pygame.draw.line(self.screen,(0,0,0),(mouse[0],mouse[1]+self.mouseLineLen),(mouse[0],mouse[1]-self.mouseLineLen),2)
+        self.mouseColor = (255,255,255)
+        pygame.draw.line(self.screen,(self.mouseColor),(mouse[0]-self.mouseLineLen,mouse[1]),(mouse[0]+self.mouseLineLen,mouse[1]),2)
+        pygame.draw.line(self.screen,(self.mouseColor),(mouse[0],mouse[1]+self.mouseLineLen),(mouse[0],mouse[1]-self.mouseLineLen),2)
 
     def generate_random_items(self):
 

@@ -10,7 +10,7 @@ class Mees(object): # peamees
     def __init__(self):
         self.lives = 7 # mitu elu mehel
         self.rect = Rect(30,SCREEN_HEIGHT-100,10,10) # ta kast
-        self.color = (0,0,0) # ta varv
+        self.color = (255,255,255) # ta varv
 
         self.speed = 0.8 # kiirus
 
