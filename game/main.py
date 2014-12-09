@@ -103,7 +103,7 @@ class Game:
 
         self.randomItems = []
 
-        self.randomItemTimer = Timer(random.randint(1,2))
+        self.randomItemTimer = Timer(random.randint(10,self.levelTime*2))
         self.randomItemTimer.run()
 
     def update_logic(self):
@@ -142,7 +142,8 @@ class Game:
                 self.pahad.remove(enemy) # paha ohverdas kahjuks end :(
 
         if(len(self.pahad) <= 10):
-            self.create_enemies(10*self.level)
+            pass
+            #self.create_enemies(10*self.level)
 
     def update_display(self): # uuendab koike mida naidatakse
 
@@ -188,13 +189,11 @@ class Game:
             self.next_level()
             self.del_bloks()
             self.del_enemies()
-            self.create_bloks(self.level*20)
-            self.create_enemies(self.level*10)
+            #self.create_bloks(self.level*20)
+            #self.create_enemies(self.level*10)
 
     def next_level(self):
         self.level += 1 # uuendame levelit
-        time.sleep(1)
-        self.mees.relvad[self.mees.relv]["kokku"] += 20
         
     def create_bloks(self,count): # loob uusi blokke
         for i in range(count):
@@ -277,29 +276,31 @@ class Game:
         if(self.randomItemTimer.end == True): # kui aeg saab otsa loome uue asja
             temp = RandomItem(self.mees.relvad,self.mees.potid)
             self.randomItems.append(temp)
-            self.randomItemTimer.reset_n(random.randint(10,self.levelTime)) # uus suvaline countdown
+            self.randomItemTimer.reset_n(random.randint(20,self.levelTime*2)) # uus suvaline countdown
             self.randomItemTimer.reset()
 
     def man_item_collision(self):
         for item in self.randomItems:
             if(collision(self.mees.rect,item.rect)): # kokkuporge mingi asjaga
-                self.mees.pickup(item)
-                if(item in self.randomItems): # korjame yles, kaotame maast
-                    self.randomItems.remove(item)
+                if(self.mees.pickup(item)): # kui korjamine successful
+                    if(item in self.randomItems): # korjame yles, kaotame maast
+                        self.randomItems.remove(item)
 
 
 
 
-game = Game(SCREEN_WIDTH, SCREEN_HEIGHT) # peamaang
+game = Game(REAL_SCREEN_WIDTH, REAL_SCREEN_HEIGHT) # peamaang
 game.mees = Mees() # peavend
 
 """ level 1 """
-game.create_bloks(0) # viis vastast
-game.create_enemies(0) # kaks vastast, viisakas
+game.create_bloks(5) # viis vastast
+game.create_enemies(20) # kaks vastast, viisakas
 """         """
 
 
 while game.run == True: # main loop
+
+    #uuendame taimereid
     game.levelTimer.update()
     for item in game.randomItems:
         item.timer.update()
@@ -332,9 +333,10 @@ while game.run == True: # main loop
         elif evt.type == pygame.QUIT: # kasutaja soovib lahkuda
             game.run = False
         elif evt.type == pygame.MOUSEBUTTONDOWN:
-            if(game.levelTimer.paused == -1):
-                game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
-                game.mouseHolding = True
+            if(game.levelTimer.paused == -1): # kui mang pole pausitud
+                if (pygame.mouse.get_pressed()[0] == 1): # kui vasakut hiireklahvi vajutatakse.
+                    game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
+                    game.mouseHolding = True
         elif evt.type == pygame.MOUSEBUTTONUP:
             if(game.levelTimer.paused == -1):
                 game.mouseHolding = False

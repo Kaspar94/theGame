@@ -27,8 +27,7 @@ class Mees(object): # peamees
                   "hoida" : 0, # kas automaat
                   "bullets" : 12, # palju kuule
                   "pide" : 12, # palju pide hoiab
-                  "kokku" : 48, # palju kokku kuule
-                  "korraga" : 1
+                  "kokku" : 48 # palju kokku kuule
                 },
             "machinegun" :
                 { "dmg" : 1,
@@ -37,7 +36,6 @@ class Mees(object): # peamees
                   "bullets" : 50,
                   "pide" : 50,
                   "kokku" : 300,
-                  "korraga" : 1,
                   "vahe" : 0.2 # kuulide laskmis vahe ajaliselt automaatselt
                 },
             "pump" :
@@ -47,7 +45,6 @@ class Mees(object): # peamees
                   "bullets" : 8,
                   "pide" : 8,
                   "kokku" : 72,
-                  "korraga" : 1,
                   "vahe" : 0.2 # kuulide laskmis vahe ajaliselt automaatselt(kui hoida == 1)
                }
         }
@@ -61,10 +58,10 @@ class Mees(object): # peamees
                     "heals" : 5
                 }
         }
-        
+
         self.relv = "handgun" # mis relv hetkel
 
-        self.relvakogu = ["handgun","pump"]
+        self.relvakogu = ["handgun"]
         self.potikogu = []
 
         self.shootTimer = Timer(1)
@@ -117,16 +114,15 @@ class Mees(object): # peamees
         if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0): # pole kuule?
             return
 
-        for i in range(self.relvad[self.relv]["korraga"]):      # laseme kuulid valja     
-            temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
-            if(self.relv == "pump"): # 2 kuuli lisaks
-                temp2 = Bullet(start[0],start[1],end[0]-50,end[1]-50,self.relvad[self.relv])
-                temp3 = Bullet(start[0],start[1],end[0]+50,end[1]+50,self.relvad[self.relv])
-                self.bullets.append(temp2)
-                self.bullets.append(temp3)
-            self.bullets.append(temp)
+        temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
+        if(self.relv == "pump"): # 2 kuuli lisaks
+            temp2 = Bullet(start[0],start[1],end[0]-50,end[1]-50,self.relvad[self.relv])
+            temp3 = Bullet(start[0],start[1],end[0]+50,end[1]+50,self.relvad[self.relv])
+            self.bullets.append(temp2)
+            self.bullets.append(temp3)
+        self.bullets.append(temp)
         
-        self.relvad[self.relv]["bullets"] -= self.relvad[self.relv]["korraga"]
+        self.relvad[self.relv]["bullets"] -= 1 # laseb yhe kuuli valja
 
         if(self.relvad[self.relv]["bullets"] <= 0):
             if(self.relvad[self.relv]["kokku"] > 0): #vaatame kas varupidemes
@@ -213,7 +209,14 @@ class Mees(object): # peamees
 
     def pickup(self,item):
         if(item.type=="pot"):
-            self.potikogu.append(item.value)
+            if(len(self.potikogu) <= 2):
+                self.potikogu.append(item.value)
+                return True
         elif(item.type=="weapon"):
-            self.relvakogu.append(item.value)
-
+            if not (item.value in self.relvakogu):
+                self.relvakogu.append(item.value)
+                return True
+        elif(item.type=="bullets"):
+            if (item.weaponType in self.relvakogu):
+                self.relvad[item.weaponType]["kokku"] += item.value
+                return True
