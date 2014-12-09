@@ -23,7 +23,7 @@ class Mees(object): # peamees
         self.relvad = {
             "handgun" :
                 { "dmg" : 1, # palju relv dmg teeb
-                  "speed" : 0.5, # kui kiirelt kuul lendab
+                  "speed" : 2, # kui kiirelt kuul lendab
                   "hoida" : 0, # kas automaat
                   "bullets" : 12, # palju kuule
                   "pide" : 12, # palju pide hoiab
@@ -42,7 +42,7 @@ class Mees(object): # peamees
                 },
             "pump" :
                 { "dmg" : 1,
-                  "speed" : 1.5,
+                  "speed" : 2,
                   "hoida" : 0,
                   "bullets" : 8,
                   "pide" : 8,

@@ -1,11 +1,10 @@
-import pygame
+import pygame,math
 class Timer:
     global pause
     def __init__(self, countdown):
         self.paused = -1
         self.c = countdown*1000 # muudame sekundid millisekunditeks
         self.reset()
-        self.running = False
     def update(self):
         if(self.running == True):
             if(self.paused == -1): # pole pausil
@@ -30,4 +29,7 @@ class Timer:
         self.pauseStart = 0
         self.pauseStop = 0
         self.pauseTime = 0
-        self.end = False 
+        self.end = False
+
+    def get_secs(self):
+        return math.floor(((self.c+self.pauseTime)-(pygame.time.get_ticks() - self.start))/1000)

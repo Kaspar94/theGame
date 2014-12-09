@@ -1,7 +1,6 @@
 from object_functions import *
 import random, pygame
 from variables import *
-from timer import Timer
 class Blokk(object): # tyypiline takistus
     global SCREEN_HEIGHT
     def __init__(self,tyyp):
@@ -26,13 +25,7 @@ class Blokk(object): # tyypiline takistus
         self.rect = Rect(0,0,0,0) # loome ymbrise
         self.new_crds()
         self.new_shape()
-        self.bgTimer = Timer(5)
-        self.bgTimer.run()
     def update_logic(self):
-        self.bgTimer.update()
-        if(self.bgTimer.end):
-            self.color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
-            self.bgTimer.reset()
 
         if (((self.suund == "hor") and (self.rect.x+self.rect.w < 0 and self.dx < 0 or self.rect.x-self.rect.w > SCREEN_WIDTH  and self.dx > 0))\
             or (self.suund == "ver") and (self.rect.y+self.rect.h < 0 and self.dy < 0 or self.rect.y-self.rect.h > SCREEN_HEIGHT and self.dy > 0)):

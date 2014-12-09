@@ -13,7 +13,7 @@ from blokk import Blokk
 from mees import Mees
 from enemy import Enemy
 from variables import *
-
+from randomItem import RandomItem
 
 class Game:
     def __init__(self, WIDTH, HEIGHT):
@@ -28,8 +28,8 @@ class Game:
         self.height = HEIGHT
         self.screen = pygame.display.set_mode((self.width,self.height))
         pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0)) # tavaline hiir n'htamatuks
-        self.welcomeScreen = pygame.image.load('gameAvaekraan.png').convert()
-        self.pauseScreen = pygame.image.load('paused.png').convert_alpha()
+        self.welcomeScreen = pygame.image.load('Pics/gameAvaekraan.png').convert()
+        self.pauseScreen = pygame.image.load('Pics/paused.png').convert_alpha()
 
         self.bgcolor = (255,255,255)
         #pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
@@ -103,7 +103,7 @@ class Game:
 
         self.randomItems = []
 
-        self.randomItemTimer = Timer(random.randint(10,self.levelTime-10))
+        self.randomItemTimer = Timer(random.randint(1,2))
         self.randomItemTimer.run()
 
     def update_logic(self):
@@ -112,6 +112,7 @@ class Game:
             return
 
         self.generate_random_items()
+
 
         self.mees.update_logic() # uuendab meest
 
@@ -146,7 +147,7 @@ class Game:
         if self.gaming == True:
             self.screen.fill(self.bgcolor) # background
 
-            self.mees.show(game.screen) # peavend
+            self.mees.show(self.screen) # peavend
 
             for blokk in self.blokid: # joonistame koik blokid
                 blokk.show(self.screen)
@@ -154,9 +155,13 @@ class Game:
             for enemy in self.pahad: # joonistame koik pahad
                 enemy.show(self.screen)
 
+            for item in self.randomItems: #joonistame maas olevaid boonus asju
+                item.show(self.screen)
 
             scoretext=self.font.render("Score:"+str(self.level), 1,(0,255,255))
             self.screen.blit(scoretext, (200, 700))
+            scoretext2=self.font.render("Score:"+str(self.levelTimer.get_secs()), 1,(0,255,255))
+            self.screen.blit(scoretext2, (300, 700))
             for i,slot in enumerate(self.mees.relvakogu):
                 if(game.mees.relv==slot):
                     self.slotColor = (255,0,255)
@@ -256,13 +261,18 @@ class Game:
         pygame.draw.line(self.screen,(0,0,0),(mouse[0],mouse[1]+self.mouseLineLen),(mouse[0],mouse[1]-self.mouseLineLen),2)
 
     def generate_random_items(self):
-        self.randomItemTimer.update()
-        if(self.randomItemTimer.end == True):
-            potOrWeapon = random.randint(1,3)
-            if(potOrWeapon == 1): # relv
-                self.randomItems.append(random.choice(list(self.mees.relvad.keys())))
-                print (self.randomItems)
-            self.randomItemTimer.reset_n(random.randint(10,self.levelTime))
+
+        self.randomItemTimer.update() # uuendame timerit mis h2ndlib uute asjade loomist
+
+        for item in self.randomItems: # uuendame asju maas
+            item.update()
+            if(item.end()):
+                self.randomItems.remove(item)
+
+        if(self.randomItemTimer.end == True): # kui aeg saab otsa loome uue asja
+            temp = RandomItem()
+            self.randomItems.append(temp)
+            self.randomItemTimer.reset_n(random.randint(10,self.levelTime)) # uus suvaline countdown
             self.randomItemTimer.reset()
 
 
@@ -273,13 +283,15 @@ game = Game(SCREEN_WIDTH, SCREEN_HEIGHT) # peamaang
 game.mees = Mees() # peavend
 
 """ level 1 """
-game.create_bloks(10) # viis vastast
-game.create_enemies(15) # kaks vastast, viisakas
+game.create_bloks(0) # viis vastast
+game.create_enemies(0) # kaks vastast, viisakas
 """         """
 
 
 while game.run == True: # main loop
     game.levelTimer.update()
+    for item in game.randomItems:
+        item.timer.update()
     #EVENT
     for evt in pygame.event.get(): # koik eventid
         if evt.type == pygame.KEYDOWN:
@@ -289,6 +301,9 @@ while game.run == True: # main loop
                 continue
             if evt.key == pygame.K_p:
                 game.levelTimer.pauseChange()
+                game.randomItemTimer.pauseChange()
+                for item in game.randomItems:
+                    item.timer.pauseChange()
             elif evt.key == pygame.K_1:
                 game.mees.switchWeapon(0)
             elif evt.key == pygame.K_2:
