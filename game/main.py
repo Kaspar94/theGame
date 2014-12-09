@@ -142,8 +142,7 @@ class Game:
                 self.pahad.remove(enemy) # paha ohverdas kahjuks end :(
 
         if(len(self.pahad) <= 10):
-            pass
-            #self.create_enemies(10*self.level)
+            self.create_enemies(10*self.level)
 
     def update_display(self): # uuendab koike mida naidatakse
 
