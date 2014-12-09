@@ -30,7 +30,7 @@ class Game:
 
 
 
-        self.background = pygame.transform.scale((pygame.image.load("spacev1.png").convert()), (1000,900))
+        self.background = pygame.transform.scale((pygame.image.load("spacev1.png").convert()), (1024,768))
         self.bg_imgRect = self.background.get_rect()
 
 
