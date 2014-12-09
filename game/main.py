@@ -171,6 +171,9 @@ class Game:
                     self.slotColor = (0,0,0)
                 self.slots = self.font.render(str(i+1)+" "+str(slot), 1,self.slotColor)
                 self.screen.blit(self.slots, (200+i*100,500))
+            for i,slot in enumerate(self.mees.potikogu):
+                self.slots = self.font.render(str(i+6)+" "+str(slot), 1,(0,0,0))
+                self.screen.blit(self.slots, (500+i*100,500))
             if(self.levelTimer.paused == 1): # m2ng pausitud, n2itame pausi pilti
                 self.screen.blit(self.pauseScreen,(0,0))
         else:
@@ -280,7 +283,7 @@ class Game:
     def man_item_collision(self):
         for item in self.randomItems:
             if(collision(self.mees.rect,item.rect)): # kokkuporge mingi asjaga
-                mees.pickup(item)
+                self.mees.pickup(item)
                 if(item in self.randomItems): # korjame yles, kaotame maast
                     self.randomItems.remove(item)
 

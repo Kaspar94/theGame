@@ -11,13 +11,16 @@ class RandomItem():
         self.timer = Timer(random.randint(5,15))
         self.timer.run()
 
-        typeRandom = random.randint(1,5)
-        if(typeRandom > 1):
+        typeRandom = random.randint(1,10)
+        if(typeRandom > 1 and typeRandom < 8):
             self.type = "pot"
             self.value = random.choice(list(potid.keys()))
-        else:
+        elif(typeRandom==1):
             self.type = "weapon"
             self.value = random.choice(list(relvad.keys()))
+        else:
+            self.type = "bullets"
+
     def update(self):
         self.timer.update()
 

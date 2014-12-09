@@ -32,7 +32,7 @@ class Mees(object): # peamees
                 },
             "machinegun" :
                 { "dmg" : 1,
-                  "speed" : 2,
+                  "speed" : 3,
                   "hoida" : 1,
                   "bullets" : 50,
                   "pide" : 50,
@@ -105,9 +105,10 @@ class Mees(object): # peamees
 
     def drinkPotion(self,slot): # juuakse potti
         try:
-            pot = self.potikogu[slot]
+            pot = self.potid[self.potikogu[slot]]
             if "heals" in pot:
                 self.lives += pot["heals"]
+            del self.potikogu[slot]
         except Exception as e:
             print (e)
             return
@@ -210,7 +211,9 @@ class Mees(object): # peamees
 
             self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
 
-    def pickUp(self,item):
+    def pickup(self,item):
         if(item.type=="pot"):
-            self.potikogu.append()
+            self.potikogu.append(item.value)
+        elif(item.type=="weapon"):
+            self.relvakogu.append(item.value)
 
