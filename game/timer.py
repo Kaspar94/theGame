@@ -1,4 +1,4 @@
-import pygame
+import pygame,math
 class Timer:
     global pause
     def __init__(self, countdown):
@@ -19,7 +19,8 @@ class Timer:
                     self.pauseStart = pygame.time.get_ticks()
     def pauseChange(self):
         self.paused = -self.paused
-
+    def run(self):
+        self.running = True
     def reset_n(self,n):
         self.c = n*1000
     def reset(self):
@@ -28,4 +29,7 @@ class Timer:
         self.pauseStart = 0
         self.pauseStop = 0
         self.pauseTime = 0
-        self.end = False 
+        self.end = False
+
+    def get_secs(self):
+        return math.floor(((self.c+self.pauseTime)-(pygame.time.get_ticks() - self.start))/1000)
