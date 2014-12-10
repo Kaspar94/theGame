@@ -29,7 +29,7 @@ class Enemy(object):
         self.newRect= self.image.get_rect()
         self.rect.w = self.newRect[2]
         self.rect.h = self.newRect[3]
-
+        self.maxElusi = False
         if("weapon" in type): # kui kutil on relv
             self.shooter = True # ikka on laskja
             self.shootTimer = Timer(self.type["delay"]) # mitme sekundi tagant kuulid lendama hakkavad.
@@ -39,6 +39,8 @@ class Enemy(object):
         self.font=pygame.font.Font(None,27)
 
     def attack(self,target):
+        if(self.maxElusi == False):
+            self.maxElusi = self.elusi
         self.distance = (target.rect.x - self.rect.x, target.rect.y - self.rect.y) # they did the math
         self.norm = math.sqrt(self.distance[0] ** 2 + self.distance[1] ** 2)
         self.direction = (self.distance[0] / self.norm, self.distance[1] / self.norm)
@@ -64,8 +66,12 @@ class Enemy(object):
         if(rect_in_map(self.rect)): # kontrollime kas objekt mapi sees et mitte teha asjatuid joonistamisi.
             scr.blit(self.image, self.rect.get())
 
-            #self.livesText=self.font.render(str(self.rect.h), 1,(255,255,0))
-            #scr.blit(self.livesText, (self.rect.x-20, self.rect.y))
+            #joonistab health bari
+            self.greenBar = (self.elusi*self.rect.w)/self.maxElusi
+            korgus = self.rect.y+self.rect.h+5
+            pygame.draw.line(scr,(0,255,0),(self.rect.x,korgus),(self.rect.x+self.greenBar+2,korgus),3)
+            pygame.draw.line(scr,(255,0,0),(self.rect.x+self.greenBar,korgus),(self.rect.x+self.rect.w,korgus),3)
+
         if(self.shooter):
             for bullet in self.bullets:
                 bullet.show(scr)

@@ -242,8 +242,10 @@ class Game:
         for i in range(count):
             if(random.randint(1,5) > 1): # 20% et tulistaja
                 temp = Enemy(self.enemytype["tavaline"])
+                temp.elusi = random.randint(1,self.level)
             else:
                 temp = Enemy(self.enemytype["tulistaja"])
+                temp.elusi = random.randint(1,self.level*2)
             self.pahad.append(temp)
 
     def del_bloks(self):
