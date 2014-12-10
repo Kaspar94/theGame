@@ -75,8 +75,8 @@ class Mees(object): # peamees
             self.rect.y = SCREEN_HEIGHT
         elif(self.rect.y < 0):
             self.rect.y = 0
-        if(self.rect.x > SCREEN_WIDTH):
-            self.rect.x = SCREEN_WIDTH
+        if(self.rect.x > SCREEN_WIDTH-self.rect.w):
+            self.rect.x = SCREEN_WIDTH-self.rect.w
         elif(self.rect.x < 0):
             self.rect.x = 0
 
@@ -153,7 +153,7 @@ class Mees(object): # peamees
         if(self.lives <= 0): # kas oleme surnud?
             # ... siia midagi valja moelda
             # print ("gameover")
-            self.speed = 0
+            self.speed = 3
             return True # tagastab true kui null elu, et mang teaks mida edasi teha
         return False
 

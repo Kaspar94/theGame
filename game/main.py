@@ -33,11 +33,11 @@ class Game:
         self.welcomeScreen = pygame.image.load('Pics/gameAvaekraan.png').convert()
         self.pauseScreen = pygame.image.load('Pics/paused.png').convert_alpha()
 
-        self.background = pygame.transform.scale((pygame.image.load("Pics/spacev1.png").convert()), (1024,768))
+        self.background = pygame.transform.scale((pygame.image.load("Pics/taust.png").convert()), (1024,768))
         self.bg_imgRect = self.background.get_rect()
         pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         pygame.mixer.music.load('Music/madis.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS
-        #pygame.mixer.music.play(-1)  # maitu korda m'ngib
+        pygame.mixer.music.play(-1)  # maitu korda m'ngib
         self.music_playing = 1
         """
         kiirus - bloki kiirus
@@ -88,7 +88,7 @@ class Game:
             },
             "boss" : {
                 "boss" : 1,
-                "elusi" : 1,
+                "elusi" : 10,
                 "w" : 200,
                 "h" : 200,
                 "color" : (125,0,255),
@@ -218,19 +218,16 @@ class Game:
                 self.del_enemies()
                 boss = Enemy(self.enemytype["boss"])
                 boss.rect.w,boss.rect.h = (self.level*100,self.level*100)
-                boss.type["h"] = (self.level*100)
-                boss.type["w"] = (self.level*100)
+                boss.type["h"] = (self.level*200)
+                boss.type["w"] = (self.level*200)
+                boss.type["elusi"] = (self.level*5)
                 self.pahad.append(boss)
                 self.bossInit = True
             else:
                 if(len(self.pahad) == 0):
-                    print ("p")
                     self.bossInit = False
                     self.levelTimer.reset()
                     self.next_level()
-
-            #self.create_bloks(self.level*20)
-            #self.create_enemies(self.level*10)
 
     def next_level(self):
         self.level += 1 # uuendame levelit
