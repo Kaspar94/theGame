@@ -58,8 +58,8 @@ class Game:
             },
             "lykkaja" : {
                 "maxKiirus" : 0.5,
-                "w" : 20,
-                "h" : 70,
+                "w" : 50,
+                "h" : 50,
                 "lykkab" : 200,
                 "dmg" : 2,
                 "color" : (125,120,50)
@@ -207,7 +207,6 @@ class Game:
     def Level(self):
         if(self.levelTimer.end == True):
             if(self.bossInit == False):
-                print ("init boss")
                 self.del_bloks()
                 self.del_enemies()
                 boss = Enemy(self.enemytype["boss"])
@@ -230,6 +229,7 @@ class Game:
         self.level += 1 # uuendame levelit
         self.create_bloks(self.level*5)
         self.create_enemies(self.level*15)
+
     def create_bloks(self,count): # loob uusi blokke
         for i in range(count):
             if(random.randint(1,3) > 1): # yks kolmele et tuleb ull blokk
