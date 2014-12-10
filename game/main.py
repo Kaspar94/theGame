@@ -123,9 +123,11 @@ class Game:
 
         self.bossInit = False # alguses pole bossi
 
+        self.linex = 300
+        self.linexDx = 1
     def update_logic(self):
 
-        if not self.gaming: # kui oleme avalehel voi kuskil mojal
+        if not self.gaming:
             return
 
         self.generate_random_items()
@@ -183,6 +185,10 @@ class Game:
                 self.screen.blit(self.pauseScreen,(0,0))
         else:
             self.screen.blit(self.welcomeScreen,(0,0))
+            self.linex += self.linexDx
+            if(self.linex > 650 or self.linex < 210):
+                self.linexDx = -self.linexDx
+            pygame.draw.rect(self.screen,(0,255,0),(self.linex,550,100,2))
 
         self.draw_cursor()
         pygame.display.flip()
@@ -204,6 +210,7 @@ class Game:
             self.screen.blit(self.slots, (500+i*100,500))
 
         pygame.draw.rect(self.screen,(125,125,125),(0,self.height+10,self.width,self.realheight-self.height))
+
     def Level(self):
         if(self.levelTimer.end == True):
             if(self.bossInit == False):
