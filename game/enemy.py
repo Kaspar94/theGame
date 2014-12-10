@@ -13,8 +13,6 @@ class Enemy(object):
         self.x = crd_out_x(500)
         self.y = crd_out_y(400)
         if(miniboss and crd_x != False and crd_y != False):
-            self.type["w"] /= 2
-            self.type["h"] /= 2
             self.x = crd_x
             self.y = crd_y
         self.rect = Rect(self.x, self.y, self.type["w"], self.type["h"]) # kus kutt spawnib

@@ -37,7 +37,7 @@ class Game:
         self.bg_imgRect = self.background.get_rect()
         pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         pygame.mixer.music.load('Music/madis.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS
-        pygame.mixer.music.play(-1)  # maitu korda m'ngib
+        #pygame.mixer.music.play(-1)  # maitu korda m'ngib
         self.music_playing = 1
         """
         kiirus - bloki kiirus
@@ -218,9 +218,11 @@ class Game:
                 self.del_enemies()
                 boss = Enemy(self.enemytype["boss"])
                 boss.rect.w,boss.rect.h = (self.level*100,self.level*100)
-                boss.type["h"] = (self.level*200)
-                boss.type["w"] = (self.level*200)
-                boss.type["elusi"] = (self.level*5)
+                #boss.type["h"] = (self.level*200)
+                #boss.type["w"] = (self.level*200)
+                boss.rect.h = (self.level*200)
+                boss.rect.w = (self.level*200)
+                boss.elusi = (self.level*5)
                 self.pahad.append(boss)
                 self.bossInit = True
             else:
@@ -274,13 +276,20 @@ class Game:
                 if(collision(bullet.rect, enemy.rect)):
                     if (enemy.getRekt(bullet.dmg)):
                         if("boss" in enemy.type):
-                            miniBoss = Enemy(enemy.type.copy(),True,enemy.rect.x-enemy.rect.w/2,enemy.rect.y-enemy.rect.h/2)
-                            miniBoss2 = Enemy(enemy.type.copy(),True,enemy.rect.x+enemy.rect.w/2,enemy.rect.y+enemy.rect.h/2)
-                            print (miniBoss.rect.h)
-                            if(miniBoss.rect.h > 10): # kontrollime et liiga mini poleks
-                                self.pahad.append(miniBoss)
-                                self.pahad.append(miniBoss2)
-                            print (len(self.pahad))
+                            try:
+                                miniBoss = Enemy(enemy.type.copy(),True,enemy.rect.x+random.randint(0,enemy.rect.w),enemy.rect.y)
+                                miniBoss2 = Enemy(enemy.type.copy(),True,enemy.rect.x+random.randint(0,enemy.rect.w),enemy.rect.y+enemy.rect.h)
+                                miniBoss.rect.w = enemy.rect.w/2
+                                miniBoss.rect.h = enemy.rect.h/2
+                                miniBoss2.rect.w = enemy.rect.w/2
+                                miniBoss2.rect.h = enemy.rect.h/2
+                                miniBoss.elusi = (self.level*5)
+                                miniBoss2.elusi = (self.level*5)
+                                if(miniBoss.rect.h > 10): # kontrollime et liiga mini poleks
+                                    self.pahad.append(miniBoss)
+                                    self.pahad.append(miniBoss2)
+                            except Exception as e:
+                                pass
                         self.pahad.remove(enemy)
 
                     if(bullet in self.mees.bullets): # mingi lamp
