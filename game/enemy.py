@@ -4,7 +4,7 @@ from timer import Timer
 from bullet import Bullet
 import math
 class Enemy(object):
-    def __init__(self, type, miniboss=False, crd_x=False,crd_y=False):
+    def __init__(self, type, miniboss=False,crd_x=False,crd_y=False,w=False,h=False):
         """
         hello, im a bad guy
         """
@@ -12,14 +12,23 @@ class Enemy(object):
         self.elusi = self.type["elusi"] # palju kutil elusi
         self.x = crd_out_x(500)
         self.y = crd_out_y(400)
-        if(miniboss and crd_x != False and crd_y != False):
-            self.x = crd_x
-            self.y = crd_y
-        self.rect = Rect(self.x, self.y, self.type["w"], self.type["h"]) # kus kutt spawnib
-        self.color = self.type["color"] # v2rv
+        if(miniboss and w != False and h != False):
+            if(crd_x != False and crd_y != False):
+                self.x = crd_x
+                self.y = crd_y
+            self.image = pygame.transform.scale((pygame.image.load(self.type["img"]).convert_alpha()), \
+                                             (int(w), int(h)))
+            print ("ja")
+        else:
+            #print ("no")
+            self.image = pygame.image.load(self.type["img"]).convert_alpha() # välimus
+        self.rect = Rect(self.x, self.y, 0, 0) # kus kutt spawniba
         self.speed = self.type["speed"] # ta kiirus
         self.dmg = self.type["dmg"] # kuti d2mm kokkuporkel mehega
         self.shooter = False # eeldame et pole laskja
+        self.newRect= self.image.get_rect()
+        self.rect.w = self.newRect[2]
+        self.rect.h = self.newRect[3]
 
         if("weapon" in type): # kui kutil on relv
             self.shooter = True # ikka on laskja
@@ -53,9 +62,10 @@ class Enemy(object):
 
     def show(self, scr): # joonistame valja
         if(rect_in_map(self.rect)): # kontrollime kas objekt mapi sees et mitte teha asjatuid joonistamisi.
-            pygame.draw.rect(scr, self.color, self.rect.get())
-            self.livesText=self.font.render(str(self.elusi), 1,(0,0,0))
-            scr.blit(self.livesText, (self.rect.x, self.rect.y))
+            scr.blit(self.image, self.rect.get())
+
+            #self.livesText=self.font.render(str(self.rect.h), 1,(255,255,0))
+            #scr.blit(self.livesText, (self.rect.x-20, self.rect.y))
         if(self.shooter):
             for bullet in self.bullets:
                 bullet.show(scr)

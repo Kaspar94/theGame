@@ -8,6 +8,12 @@ from timer import Timer
 class Mees(object): # peamees
     global SCREEN_WIDTH, SCREEN_HEIGHT  # ekraani laius ja pikkus
     def __init__(self):
+
+        #pygame.mixer.init(frequency=22050, size=-16, channels=4)
+        self.saund = pygame.mixer.Sound("Sounds/singleshot.wav")
+        self.saund.set_volume(0.2)
+        self.chan = pygame.mixer.find_channel()
+
         self.lives = 7 # mitu elu mehel
         self.rect = Rect(30,SCREEN_HEIGHT-100,10,10) # ta kast
         self.color = (255,255,255) # ta varv
@@ -51,11 +57,18 @@ class Mees(object): # peamees
         self.potid = {
             0 :
                 {
-                    "heals" : 2
+                    "heals" : 2,
+                     #"img" : "Pics/2HPpot.png"
                 },
             1 :
                 {
                     "heals" : 5
+                    #"img" : "Pics/5HPpot.png"
+                },
+            2 :
+                {
+                    "speed" : 2,
+                    "time" : 20
                 }
         }
 
@@ -85,6 +98,7 @@ class Mees(object): # peamees
             
     def show(self, scr):
         pygame.draw.rect(scr, self.color, self.rect.get())
+        #scr.blit(self.image, self.rect.get())
         scoretext=self.font.render("Bullets:"+str(self.relvad[self.relv]["bullets"])+"/"+str(self.relvad[self.relv]["kokku"]), 1,(255,0,255))
         scoretext2=self.font.render("Lives:"+str(self.lives), 1,(255,0,255))
         scr.blit(scoretext, (300, SCREEN_HEIGHT-100))
@@ -115,6 +129,7 @@ class Mees(object): # peamees
             return
 
         temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
+        self.chan.queue(self.saund) #############################SOUND
         if(self.relv == "pump"): # 2 kuuli lisaks
             temp2 = Bullet(start[0],start[1],end[0]-50,end[1]-50,self.relvad[self.relv])
             temp3 = Bullet(start[0],start[1],end[0]+50,end[1]+50,self.relvad[self.relv])
@@ -174,12 +189,14 @@ class Mees(object): # peamees
                     if(self.rect.x+self.rect.w>blokk.rect.x+blokk.rect.w):
                         self.rect.x = blokk.rect.x+blokk.rect.w
                         self.rect.x += blokk.lykkab
+                        self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
                     else:
                         self.rect.x = blokk.rect.x-self.rect.w
                 elif(blokk.dx < 0): # blokk liigub vasakule
                     if(self.rect.x<blokk.rect.x):
                         self.rect.x =  blokk.rect.x-self.rect.w
                         self.rect.x -= blokk.lykkab
+                        self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
                     else:
                         self.rect.x = blokk.rect.x+blokk.rect.w
 
@@ -196,20 +213,22 @@ class Mees(object): # peamees
                     if(self.rect.y+self.rect.h>blokk.rect.y+blokk.rect.h):
                         self.rect.y = blokk.rect.y+blokk.rect.h
                         self.rect.y += blokk.lykkab
+                        self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
+
                     else:
                         self.rect.y = blokk.rect.y-self.rect.h
                 elif(blokk.dy < 0): # blokk liigub yles
                     if(self.rect.y<blokk.rect.y):
                         self.rect.y =  blokk.rect.y-self.rect.h
                         self.rect.y -= blokk.lykkab
+                        self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
                     else:
                         self.rect.y = blokk.rect.y+blokk.rect.h
 
-            self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
 
     def pickup(self,item):
         if(item.type=="pot"):
-            if(len(self.potikogu) < 2):
+            if(len(self.potikogu) < 3):
                 self.potikogu.append(item.value)
                 return True
         elif(item.type=="weapon"):

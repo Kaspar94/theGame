@@ -32,11 +32,13 @@ class Game:
         pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0)) # tavaline hiir n'htamatuks
         self.welcomeScreen = pygame.image.load('Pics/gameAvaekraan.png').convert()
         self.pauseScreen = pygame.image.load('Pics/paused.png').convert_alpha()
-
-        self.background = pygame.transform.scale((pygame.image.load("Pics/taust.png").convert()), (1024,768))
+        self.speedpot = pygame.image.load("Pics/speedpot.png").convert_alpha()
+        self.hppot2 = pygame.image.load("Pics/2HPpot.png").convert_alpha()
+        self.hppot5 = pygame.image.load("Pics/5HPpot.png").convert_alpha()
+        self.background = pygame.transform.scale((pygame.image.load("Pics/spacev3.png").convert()), (1024,768))
         self.bg_imgRect = self.background.get_rect()
         pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
-        pygame.mixer.music.load('Music/madis.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS
+        pygame.mixer.music.load('Sounds/track1.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS
         #pygame.mixer.music.play(-1)  # maitu korda m'ngib
         self.music_playing = 1
         """
@@ -50,19 +52,15 @@ class Game:
         self.blokityyp = {
             "tavaline" : {
                 "maxKiirus" : 0.2, # bloki maksimaalne kiirus
-                "w" : 50, # laius
-                "h" : 50, # pikkus
                 "lykkab" : 0, # lykkamistugevus
                 "dmg" : 0, # dmg kokkuporkel
-                "color" : (0,200,0)
+                "img" : "Pics/tavalineblokkBlurred.png"
             },
             "lykkaja" : {
                 "maxKiirus" : 0.5,
-                "w" : 50,
-                "h" : 50,
                 "lykkab" : 200,
                 "dmg" : 2,
-                "color" : (125,120,50)
+                "img" : "Pics/lykkajablokkBlurred.png"
             }
 
 
@@ -70,17 +68,13 @@ class Game:
         self.enemytype = {
             "tavaline" : {
                 "elusi" : 1,
-                "w": 15,
-                "h": 15,
-                "color" : (255,0,255),
+                "img" : "Pics/tavalinevastane30x30.png",
                 "speed" : 0.1,
                 "dmg" : 1
             },
             "tulistaja" : {
                 "elusi" : 2,
-                "w" : 20,
-                "h" : 20,
-                "color" : (255,255,0),
+                "img" : "Pics/tulistajavastane40x40_2.png",
                 "speed" : 0.05,
                 "dmg" : 2,
                 "weapon" : 1,
@@ -89,9 +83,7 @@ class Game:
             "boss" : {
                 "boss" : 1,
                 "elusi" : 10,
-                "w" : 200,
-                "h" : 200,
-                "color" : (125,0,255),
+                "img" : "Pics/boss.png",
                 "speed" : 0.1,
                 "dmg" : 1000,
                 "weapon" : 1,
@@ -206,19 +198,23 @@ class Game:
             self.slots = self.font.render(str(i+1)+" "+str(slot), 1,self.slotColor)
             self.screen.blit(self.slots, (200+i*100,500))
         for i,slot in enumerate(self.mees.potikogu):
-            self.slots = self.font.render(str(i+6)+" "+str(slot), 1,(125,255,0))
+            if(slot == 0):
+                self.screen.blit(self.hppot2,(500+i*100,500))
+            elif(slot == 1):
+                self.screen.blit(self.hppot5,(500+i*100,500))
+            elif(slot == 2):
+                self.screen.blit(self.speedpot,(500+i*100,500))
+            self.slots = self.font.render(str(i+6), 1,(125,255,0))
             self.screen.blit(self.slots, (500+i*100,500))
 
         pygame.draw.rect(self.screen,(125,125,125),(0,self.height+10,self.width,self.realheight-self.height))
 
-    def Level(self):
+    def Level(self): # h2ndlib leveleid
         if(self.levelTimer.end == True):
             if(self.bossInit == False):
                 self.del_bloks()
                 self.del_enemies()
-                boss = Enemy(self.enemytype["boss"])
-                boss.rect.h = (self.level*100)
-                boss.rect.w = (self.level*100)
+                boss = Enemy(self.enemytype["boss"],True,w=self.level*100,h=self.level*100)
                 boss.elusi = (self.level*3)
                 self.pahad.append(boss)
                 self.bossInit = True
@@ -274,16 +270,16 @@ class Game:
                     if (enemy.getRekt(bullet.dmg)):
                         if("boss" in enemy.type):
                             try:  # viskab mingi errori non-integer stop for randrange(). Ei oska muudmoodi lahendada :(
-                                miniBoss = Enemy(enemy.type.copy(),True,enemy.rect.x+random.randint(0,enemy.rect.w),enemy.rect.y)
-                                miniBoss2 = Enemy(enemy.type.copy(),True,enemy.rect.x+random.randint(0,enemy.rect.w),enemy.rect.y+enemy.rect.h)
-                                miniBoss.rect.w,miniBoss.rect.h = enemy.rect.w/2,enemy.rect.h/2
-                                miniBoss2.rect.w,miniBoss2.rect.h = enemy.rect.w/2,enemy.rect.h/2
+                                miniBoss = Enemy(enemy.type,True,enemy.rect.x+random.randint(0,enemy.rect.w),enemy.rect.y,enemy.rect.w/2,enemy.rect.h/2)
+                                miniBoss2 = Enemy(enemy.type,True,enemy.rect.x+random.randint(0,enemy.rect.w),enemy.rect.y+enemy.rect.h,enemy.rect.w/2,enemy.rect.h/2)
+                                #miniBoss.rect.w,miniBoss.rect.h = enemy.rect.w/2,enemy.rect.h/2
+                                #miniBoss2.rect.w,miniBoss2.rect.h = enemy.rect.w/2,enemy.rect.h/2
                                 miniBoss.elusi,miniBoss2.elusi = (self.level*5),(self.level*5)
                                 if(miniBoss.rect.h > 10): # kontrollime et liiga mini poleks
                                     self.pahad.append(miniBoss)
                                     self.pahad.append(miniBoss2)
                             except Exception as e:
-                                pass
+                                print (e)
                         self.pahad.remove(enemy)
 
                     if(bullet in self.mees.bullets): # mingi lamp

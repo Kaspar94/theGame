@@ -7,7 +7,7 @@ class Bullet(object):
         self.startY = startY
         self.mouseX = mouseX
         self.mouseY = mouseY
-
+        self.image = pygame.image.load("Pics/bullet.png").convert()
         if(relv != False):
             self.relv = relv
             self.speed = self.relv["speed"]
@@ -27,6 +27,6 @@ class Bullet(object):
         self.rect.y += self.bullet_vector[1]
         
     def show(self,scr):
-        pygame.draw.rect(scr, self.color, self.rect.get())
+        scr.blit(self.image, self.rect.get())
         
     

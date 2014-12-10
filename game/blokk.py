@@ -17,12 +17,12 @@ class Blokk(object): # tyypiline takistus
             self.dy = random.uniform(0.1,tyyp["maxKiirus"])
             self.suund = "ver" # suund horisont.
 
-        self.w = tyyp["w"]
-        self.h = tyyp["h"]
         self.lykkab = tyyp["lykkab"]
         self.dmg = tyyp["dmg"]
-        self.color = (random.randint(0,255),random.randint(0,255),random.randint(0,255))
+        self.image = pygame.image.load(tyyp["img"]).convert()
         self.rect = Rect(0,0,0,0) # loome ymbrise
+        self.w = self.image.get_rect()[2]
+        self.h = self.image.get_rect()[3]
         self.new_crds()
         self.new_shape()
     def update_logic(self):
@@ -38,7 +38,7 @@ class Blokk(object): # tyypiline takistus
 
     def show(self, scr): # n2itab
         if(rect_in_map(self.rect)): # kontrollime kas objekt mapi sees et mitte teha asjatuid joonistamisi.
-            pygame.draw.rect(scr, self.color ,self.rect.get())
+            scr.blit(self.image, self.rect.get())
 
     def new_shape(self): # loob uue kuju blokile
         self.rect.w = self.w
