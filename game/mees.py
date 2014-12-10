@@ -1,16 +1,26 @@
-import pygame, random
+import pygame
+
 from object_functions import *
 from variables import *
 from bullet import Bullet
 from timer import Timer
 
+pygame.mixer.init(frequency=22050, size=-16, channels=4)
+saund = pygame.mixer.Sound("Sounds/singleshot.wav")
+saund.set_volume(0.2)
+chan = pygame.mixer.find_channel()
+
 class Mees(object): # peamees
     global SCREEN_WIDTH, SCREEN_HEIGHT  # ekraani laius ja pikkus
     def __init__(self):
+        pygame.mixer.init(frequency=22050, size=-16, channels=4)
+        saund = pygame.mixer.Sound("Sounds/singleshot.wav")
+        chan = pygame.mixer.find_channel()
+        
         self.lives = 7 # mitu elu mehel
         self.rect = Rect(30,SCREEN_HEIGHT-100,10,10) # ta kast
-        self.color = (255,255,0) # ta varv
-
+        self.color = (255,255,255) # ta varv
+        #self.image = pygame.image.load("Pics/spacecraft3/spacecraft3_N.png")
         self.speed = 0.8 # kiirus
 
         self.bullets = [] # valjalastud kuulid
@@ -22,43 +32,52 @@ class Mees(object): # peamees
         self.relvad = {
             "handgun" :
                 { "dmg" : 1, # palju relv dmg teeb
-                  "speed" : 0.5, # kui kiirelt kuul lendab
+                  "speed" : 2, # kui kiirelt kuul lendabs
                   "hoida" : 0, # kas automaat
                   "bullets" : 12, # palju kuule
                   "pide" : 12, # palju pide hoiab
-                  "kokku" : 48, # palju kokku kuule
-                  "korraga" : 1
+                  "kokku" : -1 # palju kokku kuule
                 },
             "machinegun" :
                 { "dmg" : 1,
-                  "speed" : 2,
+                  "speed" : 4,
                   "hoida" : 1,
                   "bullets" : 50,
                   "pide" : 50,
                   "kokku" : 300,
-                  "korraga" : 1,
                   "vahe" : 0.2 # kuulide laskmis vahe ajaliselt automaatselt
                 },
             "pump" :
                 { "dmg" : 1,
-                  "speed" : 1.5,
+                  "speed" : 2,
                   "hoida" : 0,
                   "bullets" : 8,
                   "pide" : 8,
                   "kokku" : 72,
-                  "korraga" : 1,
                   "vahe" : 0.2 # kuulide laskmis vahe ajaliselt automaatselt(kui hoida == 1)
                }
         }
-        
-        self.relv = "handgun" # mis relv hetkel
-        self.relvakogu = { # 1 kui olemas, 0 kui mitte
-            "handgun" : 1,
-            "machinegun" : 1,
-            "pump" : 1
+        self.potid = {
+            0 :
+                {
+                    "heals" : 2
+                    #"img" : "Pics/2HPpot.png"
+                },
+            1 :
+                {
+                    "heals" : 5
+                    #"img" : "Pics/5HPpot.png"
+                }
         }
 
+        self.relv = "handgun" # mis relv hetkel
+
+        self.relvakogu = ["handgun","machinegun"]
+        self.potikogu = []
+
         self.shootTimer = Timer(1)
+        self.shootTimer.run()
+        self.koos = []
 
     def update_logic(self):
         self.shootTimer.update()
@@ -77,6 +96,7 @@ class Mees(object): # peamees
             
     def show(self, scr):
         pygame.draw.rect(scr, self.color, self.rect.get())
+        #scr.blit(self.image, self.rect.get())
         scoretext=self.font.render("Bullets:"+str(self.relvad[self.relv]["bullets"])+"/"+str(self.relvad[self.relv]["kokku"]), 1,(255,0,255))
         scoretext2=self.font.render("Lives:"+str(self.lives), 1,(255,0,255))
         scr.blit(scoretext, (300, SCREEN_HEIGHT-100))
@@ -86,27 +106,36 @@ class Mees(object): # peamees
             bullet.show(scr)
 
     def switchWeapon(self,slot): # vahetab relva
-        if(self.relvakogu[slot] == 1): # relv on relvakogus
-            self.relv = slot
-        else:
+        try:
+            self.relv = self.relvakogu[slot]
+        except Exception as e:
+            print (e)
             return
-    def drinkPotion(self,pot): # juuakse potti
-        pass
+
+    def drinkPotion(self,slot): # juuakse potti
+        try:
+            pot = self.potid[self.potikogu[slot]]
+            if "heals" in pot:
+                self.lives += pot["heals"]
+            del self.potikogu[slot]
+        except Exception as e:
+            print (e)
+            return
 
     def shoot(self,start,end,mouseButton):
-        if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0): # pole kuule?
+        if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0 and self.relvad[self.relv]["kokku"] != -1): # pole kuule?
             return
 
-        for i in range(self.relvad[self.relv]["korraga"]):      # laseme kuulid valja     
-            temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
-            if(self.relv == "pump"): # 2 kuuli lisaks
-                temp2 = Bullet(start[0],start[1],end[0]-50,end[1]-50,self.relvad[self.relv])
-                temp3 = Bullet(start[0],start[1],end[0]+50,end[1]+50,self.relvad[self.relv])
-                self.bullets.append(temp2)
-                self.bullets.append(temp3)
-            self.bullets.append(temp)
+        temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
+        chan.queue(saund) #############################SOUND
+        if(self.relv == "pump"): # 2 kuuli lisaks
+            temp2 = Bullet(start[0],start[1],end[0]-50,end[1]-50,self.relvad[self.relv])
+            temp3 = Bullet(start[0],start[1],end[0]+50,end[1]+50,self.relvad[self.relv])
+            self.bullets.append(temp2)
+            self.bullets.append(temp3)
+        self.bullets.append(temp)
         
-        self.relvad[self.relv]["bullets"] -= self.relvad[self.relv]["korraga"]
+        self.relvad[self.relv]["bullets"] -= 1 # laseb yhe kuuli valja
 
         if(self.relvad[self.relv]["bullets"] <= 0):
             if(self.relvad[self.relv]["kokku"] > 0): #vaatame kas varupidemes
@@ -136,7 +165,7 @@ class Mees(object): # peamees
 
         if(self.lives <= 0): # kas oleme surnud?
             # ... siia midagi valja moelda
-            print ("gameover")
+            # print ("gameover")
             self.speed = 0
             return True # tagastab true kui null elu, et mang teaks mida edasi teha
         return False
@@ -191,4 +220,16 @@ class Mees(object): # peamees
 
             self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
 
-
+    def pickup(self,item):
+        if(item.type=="pot"):
+            if(len(self.potikogu) < 2):
+                self.potikogu.append(item.value)
+                return True
+        elif(item.type=="weapon"):
+            if not (item.value in self.relvakogu):
+                self.relvakogu.append(item.value)
+                return True
+        elif(item.type=="bullets"):
+            if (item.weaponType in self.relvakogu):
+                self.relvad[item.weaponType]["kokku"] += item.value
+                return True
