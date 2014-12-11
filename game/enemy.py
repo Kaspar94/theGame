@@ -18,9 +18,7 @@ class Enemy(object):
                 self.y = crd_y
             self.image = pygame.transform.scale((pygame.image.load(self.type["img"]).convert_alpha()), \
                                              (int(w), int(h)))
-            print ("ja")
         else:
-            #print ("no")
             self.image = pygame.image.load(self.type["img"]).convert_alpha() # välimus
         self.rect = Rect(self.x, self.y, 0, 0) # kus kutt spawniba
         self.speed = self.type["speed"] # ta kiirus
@@ -71,7 +69,6 @@ class Enemy(object):
             korgus = self.rect.y+self.rect.h+5
             pygame.draw.line(scr,(0,255,0),(self.rect.x,korgus),(self.rect.x+self.greenBar+2,korgus),3)
             pygame.draw.line(scr,(255,0,0),(self.rect.x+self.greenBar,korgus),(self.rect.x+self.rect.w,korgus),3)
-
         if(self.shooter):
             for bullet in self.bullets:
                 bullet.show(scr)
@@ -85,7 +82,7 @@ class Enemy(object):
 
     def shoot(self,target):
         end = (target.rect.x,target.rect.y)
-        temp = Bullet(self.rect.x,self.rect.y,end[0],end[1])
+        temp = Bullet(self.rect.x+int(self.rect.w/2),self.rect.y+int(self.rect.h/2),end[0],end[1])
         self.bullets.append(temp)
 
     def check_collision(self,blokk): # ???

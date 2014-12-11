@@ -21,12 +21,15 @@ class Mees(object): # peamees
         self.saund3 = pygame.mixer.Sound("Sounds/pickup.wav")
         self.saund3.set_volume(0.8)
         self.chan3 = pygame.mixer.find_channel()
-        
+
 
         self.lives = 7 # mitu elu mehel
         self.rect = Rect(30,SCREEN_HEIGHT-100,10,10) # ta kast
         self.image = pygame.transform.scale((pygame.image.load("Pics/Kappa.png").convert_alpha()), (30,30))
-        
+        self.imageDisco = pygame.transform.scale((pygame.image.load("Pics/discokappa.png").convert_alpha()), (30,30))
+        self.newRect = self.image.get_rect()
+        self.rect.w = self.newRect[2]
+        self.rect.h = self.newRect[3]
         self.speed = 0.8 # kiirus
 
         self.bullets = [] # valjalastud kuulid
@@ -60,7 +63,6 @@ class Mees(object): # peamees
                   "bullets" : 8,
                   "pide" : 8,
                   "kokku" : 72,
-                  "vahe" : 0.2 # kuulide laskmis vahe ajaliselt automaatselt(kui hoida == 1)
                }
         }
         self.potid = {
@@ -77,7 +79,7 @@ class Mees(object): # peamees
             2 :
                 {
                     "speed" : 2,
-                    "time" : 20
+                    "time" : 5
                 }
         }
 
@@ -87,11 +89,14 @@ class Mees(object): # peamees
         self.potikogu = []
 
         self.shootTimer = Timer(1)
+        self.speedTimer = Timer(0)
         self.shootTimer.run()
         self.koos = []
-
+        self.saiJuurde = 0
     def update_logic(self):
         self.shootTimer.update()
+        self.speedTimer.update()
+
         #vaatame et kastist v'lja ei laheks
         if(self.rect.y > SCREEN_HEIGHT):
             self.rect.y = SCREEN_HEIGHT
@@ -104,14 +109,16 @@ class Mees(object): # peamees
 
         for bullet in self.bullets:
             bullet.update_logic()
+
+        if(self.speedTimer.end == True and self.saiJuurde != 0):
+            self.speed -= self.saiJuurde
+            self.saiJuurde = 0
             
     def show(self, scr):
-        #pygame.draw.rect(scr, self.color, self.rect.get())
-        scr.blit(self.image, self.rect.get())
-        scoretext=self.font.render("Bullets:"+str(self.relvad[self.relv]["bullets"])+"/"+str(self.relvad[self.relv]["kokku"]), 1,(255,0,255))
-        scoretext2=self.font.render("Lives:"+str(self.lives), 1,(255,0,255))
-        scr.blit(scoretext, (300, SCREEN_HEIGHT-100))
-        scr.blit(scoretext2, (200, SCREEN_HEIGHT-100))
+        if(self.saiJuurde != 0):
+            scr.blit(self.imageDisco,self.rect.get())
+        else:
+            scr.blit(self.image,self.rect.get())
 
         for bullet in self.bullets: # joonistame koik kuulid
             bullet.show(scr)
@@ -128,6 +135,12 @@ class Mees(object): # peamees
             pot = self.potid[self.potikogu[slot]]
             if "heals" in pot:
                 self.lives += pot["heals"]
+            if "speed" in pot:
+                self.saiJuurde = pot["speed"]
+                self.speed += self.saiJuurde
+                self.speedTimer.reset_n(pot["time"])
+                self.speedTimer.reset()
+                self.speedTimer.run()
             del self.potikogu[slot]
         except Exception as e:
             print (e)
@@ -145,7 +158,6 @@ class Mees(object): # peamees
             self.bullets.append(temp2)
             self.bullets.append(temp3)
         self.bullets.append(temp)
-        
         self.relvad[self.relv]["bullets"] -= 1 # laseb yhe kuuli valja
 
         if(self.relvad[self.relv]["bullets"] <= 0):
@@ -177,7 +189,7 @@ class Mees(object): # peamees
         if(self.lives <= 0): # kas oleme surnud?
             # ... siia midagi valja moelda
             # print ("gameover")
-            self.speed = 1####3
+            self.speed = 0
             return True # tagastab true kui null elu, et mang teaks mida edasi teha
         return False
 
@@ -233,8 +245,8 @@ class Mees(object): # peamees
                         self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
                     else:
                         self.rect.y = blokk.rect.y+blokk.rect.h
-
             self.chan2.queue(self.saund2)
+
     def pickup(self,item):
         if(item.type=="pot"):
             if(len(self.potikogu) < 3):
@@ -248,6 +260,6 @@ class Mees(object): # peamees
                 return True
         elif(item.type=="bullets"):
             if (item.weaponType in self.relvakogu):
-                self.chan3.queue(self.saund3)
                 self.relvad[item.weaponType]["kokku"] += item.value
+                self.chan3.queue(self.saund3)
                 return True
