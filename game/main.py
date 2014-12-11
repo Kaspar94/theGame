@@ -206,6 +206,17 @@ class Game:
                 self.screen.blit(self.speedpot,(500+i*100,500))
             self.slots = self.font.render(str(i+6), 1,(125,255,0))
             self.screen.blit(self.slots, (500+i*100,500))
+        if(game.mees.relv != "handgun"):
+            bulletsNow = str(self.mees.relvad[self.mees.relv]["bullets"])
+            bulletsTotal = str(self.mees.relvad[self.mees.relv]["kokku"])
+        else:
+            bulletsNow = "-"
+            bulletsTotal = "-"
+
+        scoretext=self.font.render("Bullets:"+bulletsNow+"/"+bulletsTotal, 1,(255,0,255))
+        scoretext2=self.font.render("Lives:"+str(self.mees.lives), 1,(255,0,255))
+        self.screen.blit(scoretext, (300, self.height-100))
+        self.screen.blit(scoretext2, (200, self.height-100))
 
         pygame.draw.rect(self.screen,(125,125,125),(0,self.height+10,self.width,self.realheight-self.height))
 
