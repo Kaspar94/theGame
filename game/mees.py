@@ -132,15 +132,16 @@ class Mees(object): # peamees
 
     def drinkPotion(self,slot): # juuakse potti
         try:
-            pot = self.potid[self.potikogu[slot]]
-            if "heals" in pot:
-                self.lives += pot["heals"]
-            if "speed" in pot:
-                self.saiJuurde = pot["speed"]
-                self.speed += self.saiJuurde
-                self.speedTimer.reset_n(pot["time"])
-                self.speedTimer.reset()
-                self.speedTimer.run()
+            if(self.speed != 0): # kui pole surnud
+                pot = self.potid[self.potikogu[slot]]
+                if "heals" in pot:
+                    self.lives += pot["heals"]
+                if "speed" in pot:
+                    self.saiJuurde = pot["speed"]
+                    self.speed += self.saiJuurde
+                    self.speedTimer.reset_n(pot["time"])
+                    self.speedTimer.reset()
+                    self.speedTimer.run()
             del self.potikogu[slot]
         except Exception as e:
             print (e)
