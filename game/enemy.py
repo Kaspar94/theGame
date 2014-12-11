@@ -4,7 +4,7 @@ from timer import Timer
 from bullet import Bullet
 import math
 class Enemy(object):
-    def __init__(self, type, miniboss=False, crd_x=False,crd_y=False):
+    def __init__(self, type, miniboss=False,crd_x=False,crd_y=False,w=False,h=False):
         """
         hello, im a bad guy
         """
@@ -12,20 +12,24 @@ class Enemy(object):
         self.elusi = self.type["elusi"] # palju kutil elusi
         self.x = crd_out_x(500)
         self.y = crd_out_y(400)
-        if(miniboss and crd_x != False and crd_y != False):
-            self.type["w"] /= 2
-            self.type["h"] /= 2
-            self.x = crd_x
-            self.y = crd_y
-            self.image = pygame.transform.scale((pygame.image.load(self.type["img"]).convert_alpha()), (int(self.type["w"]), int(self.type["h"])))
+        if(miniboss and w != False and h != False):
+            if(crd_x != False and crd_y != False):
+                self.x = crd_x
+                self.y = crd_y
+            self.image = pygame.transform.scale((pygame.image.load(self.type["img"]).convert_alpha()), \
+                                             (int(w), int(h)))
+            print ("ja")
         else:
+            #print ("no")
             self.image = pygame.image.load(self.type["img"]).convert_alpha() # välimus
-        self.rect = Rect(self.x, self.y, self.type["w"], self.type["h"]) # kus kutt spawnib
-        #self.image = pygame.image.load(self.type["img"]).convert_alpha() # välimus
+        self.rect = Rect(self.x, self.y, 0, 0) # kus kutt spawniba
         self.speed = self.type["speed"] # ta kiirus
         self.dmg = self.type["dmg"] # kuti d2mm kokkuporkel mehega
         self.shooter = False # eeldame et pole laskja
-
+        self.newRect= self.image.get_rect()
+        self.rect.w = self.newRect[2]
+        self.rect.h = self.newRect[3]
+        self.maxElusi = False
         if("weapon" in type): # kui kutil on relv
             self.shooter = True # ikka on laskja
             self.shootTimer = Timer(self.type["delay"]) # mitme sekundi tagant kuulid lendama hakkavad.
@@ -35,6 +39,8 @@ class Enemy(object):
         self.font=pygame.font.Font(None,27)
 
     def attack(self,target):
+        if(self.maxElusi == False):
+            self.maxElusi = self.elusi
         self.distance = (target.rect.x - self.rect.x, target.rect.y - self.rect.y) # they did the math
         self.norm = math.sqrt(self.distance[0] ** 2 + self.distance[1] ** 2)
         self.direction = (self.distance[0] / self.norm, self.distance[1] / self.norm)
@@ -60,8 +66,12 @@ class Enemy(object):
         if(rect_in_map(self.rect)): # kontrollime kas objekt mapi sees et mitte teha asjatuid joonistamisi.
             scr.blit(self.image, self.rect.get())
 
-            self.livesText=self.font.render(str(self.elusi), 1,(0,0,0))
-            scr.blit(self.livesText, (self.rect.x, self.rect.y))
+            #joonistab health bari
+            self.greenBar = (self.elusi*self.rect.w)/self.maxElusi
+            korgus = self.rect.y+self.rect.h+5
+            pygame.draw.line(scr,(0,255,0),(self.rect.x,korgus),(self.rect.x+self.greenBar+2,korgus),3)
+            pygame.draw.line(scr,(255,0,0),(self.rect.x+self.greenBar,korgus),(self.rect.x+self.rect.w,korgus),3)
+
         if(self.shooter):
             for bullet in self.bullets:
                 bullet.show(scr)

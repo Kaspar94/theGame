@@ -17,12 +17,12 @@ class Blokk(object): # tyypiline takistus
             self.dy = random.uniform(0.1,tyyp["maxKiirus"])
             self.suund = "ver" # suund horisont.
 
-        self.w = tyyp["w"]
-        self.h = tyyp["h"]
         self.lykkab = tyyp["lykkab"]
         self.dmg = tyyp["dmg"]
         self.image = pygame.image.load(tyyp["img"]).convert()
         self.rect = Rect(0,0,0,0) # loome ymbrise
+        self.w = self.image.get_rect()[2]
+        self.h = self.image.get_rect()[3]
         self.new_crds()
         self.new_shape()
     def update_logic(self):
