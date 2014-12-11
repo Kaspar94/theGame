@@ -231,6 +231,7 @@ class Game:
                 boss.elusi = (self.level*3)
                 self.pahad.append(boss)
                 self.bossInit = True
+                game.mees.speed += 0.2
             else:
                 if(len(self.pahad) == 0):
                     self.bossInit = False

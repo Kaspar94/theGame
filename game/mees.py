@@ -101,8 +101,8 @@ class Mees(object): # peamees
         self.speedTimer.update()
 
         #vaatame et kastist v'lja ei laheks
-        if(self.rect.y > SCREEN_HEIGHT):
-            self.rect.y = SCREEN_HEIGHT
+        if(self.rect.y > SCREEN_HEIGHT-self.rect.h):
+            self.rect.y = SCREEN_HEIGHT-self.rect.h
         elif(self.rect.y < 0):
             self.rect.y = 0
         if(self.rect.x > SCREEN_WIDTH-self.rect.w):

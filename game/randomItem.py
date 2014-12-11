@@ -19,7 +19,7 @@ class RandomItem():
         self.relvad = relvad
         self.potid = potid
 
-        typeRandom = random.randint(1,20)
+        typeRandom = random.randint(1,23)
 
         if(typeRandom<=5):
             self.type = "weapon"
