@@ -42,7 +42,7 @@ class Game:
         #pygame.mixer.music.play(-1)  # maitu korda m'ngib
         self.music_playing = 1
         """
-        kiirus - bloki kiirus
+        kiirus - bloki kiirusW
         maxw - maksimaalne laius
         maxh - maksimaaline pikkus
         lykkab - mitu pixlit lykkab eemale kokkuporkel
@@ -256,7 +256,7 @@ class Game:
                 temp.elusi = random.randint(1,self.level)
             else:
                 temp = Enemy(self.enemytype["tulistaja"])
-                temp.elusi = random.randint(1,self.level*2)
+                temp.elusi = random.randint(2,self.level*2)
             self.pahad.append(temp)
 
     def del_bloks(self):

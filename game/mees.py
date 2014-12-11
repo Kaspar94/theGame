@@ -14,10 +14,21 @@ class Mees(object): # peamees
         self.saund.set_volume(0.2)
         self.chan = pygame.mixer.find_channel()
 
+        self.saund2 = pygame.mixer.Sound("Sounds/teleport2.wav")
+        self.saund2.set_volume(0.8)
+        self.chan2 = pygame.mixer.find_channel()
+
+        self.saund3 = pygame.mixer.Sound("Sounds/pickup.wav")
+        self.saund3.set_volume(0.8)
+        self.chan3 = pygame.mixer.find_channel()
+
+
         self.lives = 7 # mitu elu mehel
         self.rect = Rect(30,SCREEN_HEIGHT-100,10,10) # ta kast
-        self.color = (255,255,255) # ta varv
-
+        self.image = pygame.transform.scale((pygame.image.load("Pics/Kappa.png").convert_alpha()), (30,30))
+        self.newRect = self.image.get_rect()
+        self.rect.w = self.newRect[2]
+        self.rect.h = self.newRect[3]
         self.speed = 0.8 # kiirus
 
         self.bullets = [] # valjalastud kuulid
@@ -103,7 +114,7 @@ class Mees(object): # peamees
             self.saiJuurde = 0
             
     def show(self, scr):
-        pygame.draw.rect(scr, self.color, self.rect.get())
+        scr.blit(self.image,self.rect.get())
         #scr.blit(self.image, self.rect.get())
 
         for bullet in self.bullets: # joonistame koik kuulid
@@ -231,17 +242,21 @@ class Mees(object): # peamees
                         self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
                     else:
                         self.rect.y = blokk.rect.y+blokk.rect.h
+            self.chan2.queue(self.saund2)
 
     def pickup(self,item):
         if(item.type=="pot"):
             if(len(self.potikogu) < 3):
                 self.potikogu.append(item.value)
+                self.chan3.queue(self.saund3)
                 return True
         elif(item.type=="weapon"):
             if not (item.value in self.relvakogu):
                 self.relvakogu.append(item.value)
+                self.chan3.queue(self.saund3)
                 return True
         elif(item.type=="bullets"):
             if (item.weaponType in self.relvakogu):
                 self.relvad[item.weaponType]["kokku"] += item.value
+                self.chan3.queue(self.saund3)
                 return True
