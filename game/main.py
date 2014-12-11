@@ -392,7 +392,8 @@ while game.run == True: # main loop
         elif evt.type == pygame.MOUSEBUTTONDOWN:
             if(game.levelTimer.paused == -1): # kui mang pole pausitud
                 if (pygame.mouse.get_pressed()[0] == 1): # kui vasakut hiireklahvi vajutatakse.
-                    game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
+                    if not ("vahe" in game.mees.relvad[game.mees.relv]): # kui on automaat siis hakkab ise tulistama
+                        game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
                     game.mouseHolding = True
         elif evt.type == pygame.MOUSEBUTTONUP:
             if(game.levelTimer.paused == -1):

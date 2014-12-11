@@ -51,7 +51,6 @@ class Mees(object): # peamees
                   "bullets" : 8,
                   "pide" : 8,
                   "kokku" : 72,
-                  "vahe" : 0.2 # kuulide laskmis vahe ajaliselt automaatselt(kui hoida == 1)
                }
         }
         self.potid = {
@@ -136,7 +135,6 @@ class Mees(object): # peamees
             self.bullets.append(temp2)
             self.bullets.append(temp3)
         self.bullets.append(temp)
-        
         self.relvad[self.relv]["bullets"] -= 1 # laseb yhe kuuli valja
 
         if(self.relvad[self.relv]["bullets"] <= 0):

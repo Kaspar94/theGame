@@ -85,7 +85,7 @@ class Enemy(object):
 
     def shoot(self,target):
         end = (target.rect.x,target.rect.y)
-        temp = Bullet(self.rect.x,self.rect.y,end[0],end[1])
+        temp = Bullet(self.rect.x+int(self.rect.w/2),self.rect.y+int(self.rect.h/2),end[0],end[1])
         self.bullets.append(temp)
 
     def check_collision(self,blokk): # ???
