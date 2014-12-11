@@ -18,9 +18,7 @@ class Enemy(object):
                 self.y = crd_y
             self.image = pygame.transform.scale((pygame.image.load(self.type["img"]).convert_alpha()), \
                                              (int(w), int(h)))
-            print ("ja")
         else:
-            #print ("no")
             self.image = pygame.image.load(self.type["img"]).convert_alpha() # välimus
         self.rect = Rect(self.x, self.y, 0, 0) # kus kutt spawniba
         self.speed = self.type["speed"] # ta kiirus
