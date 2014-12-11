@@ -25,10 +25,9 @@ class RandomItem():
             self.type = "weapon"
             self.image = self.weaponCrate
             self.value = random.choice(list(relvad.keys()))
-        elif(typeRandom > 5 and typeRandom < 19):
+        elif(typeRandom > 5 and typeRandom < 14):
             self.type = "pot"
             self.value = random.choice(list(potid.keys()))
-            self.value = 2
             if(self.value == 0):
                 self.image = self.hppot2
             elif(self.value == 1):

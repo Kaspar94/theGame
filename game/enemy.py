@@ -65,10 +65,11 @@ class Enemy(object):
             scr.blit(self.image, self.rect.get())
 
             #joonistab health bari
-            self.greenBar = (self.elusi*self.rect.w)/self.maxElusi
-            korgus = self.rect.y+self.rect.h+5
-            pygame.draw.line(scr,(0,255,0),(self.rect.x,korgus),(self.rect.x+self.greenBar+2,korgus),3)
-            pygame.draw.line(scr,(255,0,0),(self.rect.x+self.greenBar,korgus),(self.rect.x+self.rect.w,korgus),3)
+            if(self.maxElusi > 0):
+                self.greenBar = (self.elusi*self.rect.w)/self.maxElusi
+                korgus = self.rect.y+self.rect.h+5
+                pygame.draw.line(scr,(0,255,0),(self.rect.x,korgus),(self.rect.x+self.greenBar+2,korgus),3)
+                pygame.draw.line(scr,(255,0,0),(self.rect.x+self.greenBar,korgus),(self.rect.x+self.rect.w,korgus),3)
         if(self.shooter):
             for bullet in self.bullets:
                 bullet.show(scr)

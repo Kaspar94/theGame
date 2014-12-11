@@ -27,6 +27,8 @@ class Mees(object): # peamees
         self.rect = Rect(30,SCREEN_HEIGHT-100,10,10) # ta kast
         self.image = pygame.transform.scale((pygame.image.load("Pics/Kappa.png").convert_alpha()), (30,30))
         self.imageDisco = pygame.transform.scale((pygame.image.load("Pics/discokappa.png").convert_alpha()), (30,30))
+        self.image2 = pygame.image.load('Pics/Untitled.png').convert_alpha()
+        self.image2Rect = self.image2.get_rect()
         self.newRect = self.image.get_rect()
         self.rect.w = self.newRect[2]
         self.rect.h = self.newRect[3]
@@ -93,6 +95,7 @@ class Mees(object): # peamees
         self.shootTimer.run()
         self.koos = []
         self.saiJuurde = 0
+        self.dead = 0
     def update_logic(self):
         self.shootTimer.update()
         self.speedTimer.update()
@@ -122,7 +125,8 @@ class Mees(object): # peamees
 
         for bullet in self.bullets: # joonistame koik kuulid
             bullet.show(scr)
-
+        if (self.dead == 1):
+            scr.blit(self.image2,self.image2Rect)
     def switchWeapon(self,slot): # vahetab relva
         try:
             self.relv = self.relvakogu[slot]
@@ -191,6 +195,7 @@ class Mees(object): # peamees
             # ... siia midagi valja moelda
             # print ("gameover")
             self.speed = 0
+            self.dead = 1
             return True # tagastab true kui null elu, et mang teaks mida edasi teha
         return False
 
