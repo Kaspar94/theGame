@@ -25,9 +25,10 @@ class RandomItem():
             self.type = "weapon"
             self.image = self.weaponCrate
             self.value = random.choice(list(relvad.keys()))
-        elif(typeRandom > 5 and typeRandom < 15):
+        elif(typeRandom > 5 and typeRandom < 19):
             self.type = "pot"
             self.value = random.choice(list(potid.keys()))
+            self.value = 2
             if(self.value == 0):
                 self.image = self.hppot2
             elif(self.value == 1):
@@ -38,6 +39,8 @@ class RandomItem():
             self.type = "bullets"
             self.image = self.bullets
             self.weaponType = random.choice(list(relvad.keys())) # pump
+            while self.weaponType == "handgun":
+                self.weaponType = random.choice(list(relvad.keys())) # pump
             self.value = self.relvad[self.weaponType]["pide"]*random.randint(1,5)
 
         self.newRect = self.image.get_rect()

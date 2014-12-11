@@ -67,7 +67,7 @@ class Mees(object): # peamees
             2 :
                 {
                     "speed" : 2,
-                    "time" : 20
+                    "time" : 5
                 }
         }
 
@@ -77,11 +77,14 @@ class Mees(object): # peamees
         self.potikogu = []
 
         self.shootTimer = Timer(1)
+        self.speedTimer = Timer(0)
         self.shootTimer.run()
         self.koos = []
-
+        self.saiJuurde = 0
     def update_logic(self):
         self.shootTimer.update()
+        self.speedTimer.update()
+
         #vaatame et kastist v'lja ei laheks
         if(self.rect.y > SCREEN_HEIGHT):
             self.rect.y = SCREEN_HEIGHT
@@ -94,6 +97,10 @@ class Mees(object): # peamees
 
         for bullet in self.bullets:
             bullet.update_logic()
+
+        if(self.speedTimer.end == True and self.saiJuurde != 0):
+            self.speed -= self.saiJuurde
+            self.saiJuurde = 0
             
     def show(self, scr):
         pygame.draw.rect(scr, self.color, self.rect.get())
@@ -118,6 +125,12 @@ class Mees(object): # peamees
             pot = self.potid[self.potikogu[slot]]
             if "heals" in pot:
                 self.lives += pot["heals"]
+            if "speed" in pot:
+                self.saiJuurde = pot["speed"]
+                self.speed += self.saiJuurde
+                self.speedTimer.reset_n(pot["time"])
+                self.speedTimer.reset()
+                self.speedTimer.run()
             del self.potikogu[slot]
         except Exception as e:
             print (e)
@@ -222,7 +235,6 @@ class Mees(object): # peamees
                         self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
                     else:
                         self.rect.y = blokk.rect.y+blokk.rect.h
-
 
     def pickup(self,item):
         if(item.type=="pot"):

@@ -276,7 +276,7 @@ class Game:
                                 miniBoss2 = Enemy(enemy.type,True,enemy.rect.x+random.randint(0,enemy.rect.w),enemy.rect.y+enemy.rect.h,enemy.rect.w/2,enemy.rect.h/2)
                                 #miniBoss.rect.w,miniBoss.rect.h = enemy.rect.w/2,enemy.rect.h/2
                                 #miniBoss2.rect.w,miniBoss2.rect.h = enemy.rect.w/2,enemy.rect.h/2
-                                miniBoss.elusi,miniBoss2.elusi = (self.level*5),(self.level*5)
+                                miniBoss.elusi,miniBoss2.elusi = (self.level*3),(self.level*3)
                                 if(miniBoss.rect.h > 10): # kontrollime et liiga mini poleks
                                     self.pahad.append(miniBoss)
                                     self.pahad.append(miniBoss2)
@@ -371,6 +371,7 @@ while game.run == True: # main loop
             if evt.key == pygame.K_p:
                 game.levelTimer.pauseChange()
                 game.randomItemTimer.pauseChange()
+                game.mees.speedTimer.pauseChange()
                 for item in game.randomItems:
                     item.timer.pauseChange()
             elif evt.key == pygame.K_1:
