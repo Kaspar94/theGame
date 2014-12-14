@@ -81,7 +81,7 @@ class Mees(object): # peamees
             2 :
                 {
                     "speed" : 2,
-                    "time" : 5
+                    "time" : 20
                 }
         }
 
