@@ -40,8 +40,9 @@ class Game:
         self.bg_imgRect = self.background.get_rect()
         pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         pygame.mixer.music.load('Sounds/track1_track2.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS
-        pygame.mixer.music.play(-1)  # maitu korda m'ngib
+        #pygame.mixer.music.play(-1)  # maitu korda m'ngib
         self.music_playing = 1
+        self.play_sounds = 1
         """
         kiirus - bloki kiirusW
         maxw - maksimaalne laius
@@ -373,6 +374,7 @@ while game.run == True: # main loop
         if evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_RETURN:
                 game.gaming = True
+
             if evt.key == pygame.K_m:
                 if(game.music_playing == 1):
                     pygame.mixer.music.pause()
@@ -380,14 +382,28 @@ while game.run == True: # main loop
                 else:
                     pygame.mixer.music.unpause()
                     game.music_playing = 1
+
+            if evt.key == pygame.K_n:
+                game.play_sounds = -game.play_sounds
+                if(game.play_sounds > 0):
+                    game.mees.saund.set_volume(0.2)
+                    game.mees.saund2.set_volume(0.2)
+                    game.mees.saund3.set_volume(0.2)
+                else:
+                    game.mees.saund.set_volume(0)
+                    game.mees.saund2.set_volume(0)
+                    game.mees.saund3.set_volume(0)
+
             if not game.gaming: # 2rme vaata teisi evente kui m2ng ei k2i.
                 continue
+
             if evt.key == pygame.K_p:
                 game.levelTimer.pauseChange()
                 game.randomItemTimer.pauseChange()
                 game.mees.speedTimer.pauseChange()
                 for item in game.randomItems:
                     item.timer.pauseChange()
+
             elif evt.key == pygame.K_1:
                 game.mees.switchWeapon(0)
             elif evt.key == pygame.K_2:
@@ -402,14 +418,17 @@ while game.run == True: # main loop
                 game.mees.drinkPotion(0)
             elif evt.key == pygame.K_7:
                 game.mees.drinkPotion(1)
+
         elif evt.type == pygame.QUIT: # kasutaja soovib lahkuda
             game.run = False
+
         elif evt.type == pygame.MOUSEBUTTONDOWN:
             if(game.levelTimer.paused == -1): # kui mang pole pausitud
                 if (pygame.mouse.get_pressed()[0] == 1): # kui vasakut hiireklahvi vajutatakse.
                     if not ("vahe" in game.mees.relvad[game.mees.relv]): # kui on automaat siis hakkab ise tulistama
                         game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
                     game.mouseHolding = True
+
         elif evt.type == pygame.MOUSEBUTTONUP:
             if(game.levelTimer.paused == -1):
                 game.mouseHolding = False
