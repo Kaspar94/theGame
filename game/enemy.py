@@ -28,6 +28,8 @@ class Enemy(object):
         self.rect.w = self.newRect[2]
         self.rect.h = self.newRect[3]
         self.maxElusi = False
+        self.t = 0
+        self.poiklemine = 0
         if("weapon" in type): # kui kutil on relv
             self.shooter = True # ikka on laskja
             self.shootTimer = Timer(self.type["delay"]) # mitme sekundi tagant kuulid lendama hakkavad.
@@ -37,6 +39,7 @@ class Enemy(object):
         self.font=pygame.font.Font(None,27)
 
     def attack(self,target):
+        self.t += 0.009
         if(self.maxElusi == False):
             self.maxElusi = self.elusi
         self.distance = (target.rect.x - self.rect.x, target.rect.y - self.rect.y) # they did the math
@@ -45,7 +48,11 @@ class Enemy(object):
         self.bullet_vector = (self.direction[0] * self.speed, self.direction[1] * self.speed)
 
         self.rect.x += self.bullet_vector[0]
-        self.rect.y += self.bullet_vector[1]
+        if(self.poiklemine == 1):
+            self.rect.y += self.bullet_vector[1]+math.sin(self.t)/2
+        else:
+            self.rect.y += self.bullet_vector[1]
+
         if(self.shooter): # pahalpoisil on relv!
             self.shootTimer.update() # uuendame tulistamis timerit
 

@@ -261,6 +261,8 @@ class Game:
             else:
                 temp = Enemy(self.enemytype["tulistaja"])
                 temp.elusi = random.randint(2,self.level*2)
+            if(random.randint(1,5) > 3):
+                temp.poiklemine = 1
             self.pahad.append(temp)
 
     def del_bloks(self):
