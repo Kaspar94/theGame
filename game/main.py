@@ -14,6 +14,7 @@ from mees import Mees
 from enemy import Enemy
 from variables import *
 from randomItem import RandomItem
+from laser import Laser
 
 class Game:
     def __init__(self, REALWIDTH, REALHEIGHT, GAMEWIDTH, GAMEHEIGHT):
@@ -95,6 +96,7 @@ class Game:
 
         self.blokid = []
         self.pahad = []
+        self.laserid = []
 
         self.font=pygame.font.Font(None,30)
 
@@ -119,6 +121,7 @@ class Game:
 
         self.linex = 300
         self.linexDx = 1
+
     def update_logic(self):
 
         if not self.gaming:
@@ -131,6 +134,13 @@ class Game:
 
         if(self.mouseHolding): # kui hiirt hoitakse all->automaatne tulistamine
             self.mees.automatic()
+
+        for laser in self.laserid:
+            laser.update_logic()
+
+            if(collision(laser.rect,self.mees.rect) and laser.wait.end == True and laser.delay.end == True): # kui mees saab laserit
+                self.mees.getRekt(laser.dmg) # mees saab dmg
+                laser.bye()
 
         for blokk in self.blokid:
 
@@ -169,6 +179,9 @@ class Game:
 
             for enemy in self.pahad: # joonistame koik pahad
                 enemy.show(self.screen)
+
+            for laser in self.laserid:
+                laser.show(self.screen)
 
             for item in self.randomItems: #joonistame maas olevaid boonus asju
                 item.show(self.screen)
@@ -232,11 +245,13 @@ class Game:
                 boss.elusi = (self.level*3)
                 self.pahad.append(boss)
                 self.bossInit = True
+                self.create_lasers(2*self.level)
                 game.mees.speed += 0.2
             else:
                 if(len(self.pahad) == 0):
                     self.bossInit = False
                     self.levelTimer.reset()
+                    self.del_lasers()
                     self.next_level()
 
     def next_level(self):
@@ -265,11 +280,19 @@ class Game:
                 temp.poiklemine = 1
             self.pahad.append(temp)
 
+    def create_lasers(self,count):
+        for i in range(count):
+            temp = Laser(random.randint(2,self.level*8))
+            self.laserid.append(temp)
+
     def del_bloks(self):
         self.blokid = []
 
     def del_enemies(self):
         self.pahad = []
+
+    def del_lasers(self):
+        self.laserid = []
 
     def check_bullets(self): #
         for bullet in self.mees.bullets: # vaatame millega kuulid kokku porkavad :
@@ -405,6 +428,9 @@ while game.run == True: # main loop
                 game.mees.speedTimer.pauseChange()
                 for item in game.randomItems:
                     item.timer.pauseChange()
+                for laser in game.laserid:
+                    laser.wait.pauseChange()
+                    laser.delay.pauseChange()
 
             elif evt.key == pygame.K_1:
                 game.mees.switchWeapon(0)
