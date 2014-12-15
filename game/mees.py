@@ -80,8 +80,8 @@ class Mees(object): # peamees
                 },
             2 :
                 {
-                    "speed" : 2,
-                    "time" : 5
+                    "speed" : 1,
+                    "time" : 20
                 }
         }
 

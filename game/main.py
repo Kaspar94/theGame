@@ -14,6 +14,7 @@ from mees import Mees
 from enemy import Enemy
 from variables import *
 from randomItem import RandomItem
+from laser import Laser
 
 class Game:
     def __init__(self, REALWIDTH, REALHEIGHT, GAMEWIDTH, GAMEHEIGHT):
@@ -40,8 +41,9 @@ class Game:
         self.bg_imgRect = self.background.get_rect()
         pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         pygame.mixer.music.load('Sounds/track1_track2.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS
-        pygame.mixer.music.play(-1)  # maitu korda m'ngib
+        #pygame.mixer.music.play(-1)  # maitu korda m'ngib
         self.music_playing = 1
+        self.play_sounds = 1
         """
         kiirus - bloki kiirusW
         maxw - maksimaalne laius
@@ -94,6 +96,7 @@ class Game:
 
         self.blokid = []
         self.pahad = []
+        self.laserid = []
 
         self.font=pygame.font.Font(None,30)
 
@@ -118,6 +121,7 @@ class Game:
 
         self.linex = 300
         self.linexDx = 1
+
     def update_logic(self):
 
         if not self.gaming:
@@ -130,6 +134,13 @@ class Game:
 
         if(self.mouseHolding): # kui hiirt hoitakse all->automaatne tulistamine
             self.mees.automatic()
+
+        for laser in self.laserid:
+            laser.update_logic()
+
+            if(collision(laser.rect,self.mees.rect) and laser.wait.end == True and laser.delay.end == True): # kui mees saab laserit
+                self.mees.getRekt(laser.dmg) # mees saab dmg
+                laser.bye()
 
         for blokk in self.blokid:
 
@@ -168,6 +179,9 @@ class Game:
 
             for enemy in self.pahad: # joonistame koik pahad
                 enemy.show(self.screen)
+
+            for laser in self.laserid:
+                laser.show(self.screen)
 
             for item in self.randomItems: #joonistame maas olevaid boonus asju
                 item.show(self.screen)
@@ -231,11 +245,13 @@ class Game:
                 boss.elusi = (self.level*3)
                 self.pahad.append(boss)
                 self.bossInit = True
+                self.create_lasers(2*self.level)
                 game.mees.speed += 0.2
             else:
                 if(len(self.pahad) == 0):
                     self.bossInit = False
                     self.levelTimer.reset()
+                    self.del_lasers()
                     self.next_level()
 
     def next_level(self):
@@ -260,13 +276,23 @@ class Game:
             else:
                 temp = Enemy(self.enemytype["tulistaja"])
                 temp.elusi = random.randint(2,self.level*2)
+            if(random.randint(1,5) > 3):
+                temp.poiklemine = 1
             self.pahad.append(temp)
+
+    def create_lasers(self,count):
+        for i in range(count):
+            temp = Laser(random.randint(2,self.level*8))
+            self.laserid.append(temp)
 
     def del_bloks(self):
         self.blokid = []
 
     def del_enemies(self):
         self.pahad = []
+
+    def del_lasers(self):
+        self.laserid = []
 
     def check_bullets(self): #
         for bullet in self.mees.bullets: # vaatame millega kuulid kokku porkavad :
@@ -373,6 +399,7 @@ while game.run == True: # main loop
         if evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_RETURN:
                 game.gaming = True
+
             if evt.key == pygame.K_m:
                 if(game.music_playing == 1):
                     pygame.mixer.music.pause()
@@ -380,14 +407,31 @@ while game.run == True: # main loop
                 else:
                     pygame.mixer.music.unpause()
                     game.music_playing = 1
+
+            if evt.key == pygame.K_n:
+                game.play_sounds = -game.play_sounds
+                if(game.play_sounds > 0):
+                    game.mees.saund.set_volume(0.2)
+                    game.mees.saund2.set_volume(0.2)
+                    game.mees.saund3.set_volume(0.2)
+                else:
+                    game.mees.saund.set_volume(0)
+                    game.mees.saund2.set_volume(0)
+                    game.mees.saund3.set_volume(0)
+
             if not game.gaming: # 2rme vaata teisi evente kui m2ng ei k2i.
                 continue
+
             if evt.key == pygame.K_p:
                 game.levelTimer.pauseChange()
                 game.randomItemTimer.pauseChange()
                 game.mees.speedTimer.pauseChange()
                 for item in game.randomItems:
                     item.timer.pauseChange()
+                for laser in game.laserid:
+                    laser.wait.pauseChange()
+                    laser.delay.pauseChange()
+
             elif evt.key == pygame.K_1:
                 game.mees.switchWeapon(0)
             elif evt.key == pygame.K_2:
@@ -402,14 +446,17 @@ while game.run == True: # main loop
                 game.mees.drinkPotion(0)
             elif evt.key == pygame.K_7:
                 game.mees.drinkPotion(1)
+
         elif evt.type == pygame.QUIT: # kasutaja soovib lahkuda
             game.run = False
+
         elif evt.type == pygame.MOUSEBUTTONDOWN:
             if(game.levelTimer.paused == -1): # kui mang pole pausitud
                 if (pygame.mouse.get_pressed()[0] == 1): # kui vasakut hiireklahvi vajutatakse.
                     if not ("vahe" in game.mees.relvad[game.mees.relv]): # kui on automaat siis hakkab ise tulistama
                         game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
                     game.mouseHolding = True
+
         elif evt.type == pygame.MOUSEBUTTONUP:
             if(game.levelTimer.paused == -1):
                 game.mouseHolding = False
