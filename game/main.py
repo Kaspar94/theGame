@@ -230,7 +230,13 @@ class Game:
             bulletsTotal = "-"
 
         scoretext=self.font.render(bulletsNow+"/"+bulletsTotal, 1,(0,0,0))
-        scoretext2=self.font.render(str(self.mees.lives), 1,(0,0,0))
+        if(self.mees.lives < 3):
+            self.livesColor = (255,0,0)
+        elif(self.mees.lives >= 3 and self.mees.lives < 5):
+            self.livesColor = (255,128,0)
+        else:
+            self.livesColor = (0,255,0)
+        scoretext2=self.font.render(str(self.mees.lives),1,self.livesColor)
         self.screen.blit(scoretext, (650, self.height+94))
         self.screen.blit(scoretext2, (200, self.height+35))
 
@@ -332,7 +338,7 @@ class Game:
             if(enemy.shooter):
 
                 for bullet in enemy.bullets:
-                    if not(rect_in_map(bullet.rect)): # kui kuul mapist valjas
+                    if not(rect_in_map(bullet.rect)): # kui kuul mapist valjas, kaotame
                         if(bullet in enemy.bullets):
                             enemy.bullets.remove(bullet)
                             continue
