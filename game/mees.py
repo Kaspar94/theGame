@@ -154,7 +154,6 @@ class Mees(object): # peamees
     def shoot(self,start,end,mouseButton):
         if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0 and self.relvad[self.relv]["kokku"] != -1): # pole kuule?
             return
-
         temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
         self.chan.queue(self.saund) #############################SOUND
         if(self.relv == "pump"): # 2 kuuli lisaks
