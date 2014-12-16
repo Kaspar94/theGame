@@ -261,10 +261,10 @@ class Mees(object): # peamees
         elif(item.type=="weapon"):
             if not (item.value in self.relvakogu): # kui relva pole lisame juurde
                 self.relvakogu.append(item.value)
-                self.chan3.queue(self.saund3)
-                return True
             else: # lisame kuule
                 self.relvad[item.value]["kokku"] += self.relvad[item.value]["pide"]*5 # anname 5 pide jagu kuule
+            self.chan3.queue(self.saund3)
+            return True
         elif(item.type=="bullets"):
             if (item.weaponType in self.relvakogu):
                 self.relvad[item.weaponType]["kokku"] += item.value
