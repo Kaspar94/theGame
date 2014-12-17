@@ -58,7 +58,7 @@ class Enemy(object):
 
             if(self.shootTimer.end): # taimer jooksis nulli, ehk aeg lasta
                 self.shoot(target)
-                self.shootTimer.reset()k
+                self.shootTimer.reset()
 
             for bullet in self.bullets: # uuendame kuule mis valja lastud
                 bullet.update_logic()

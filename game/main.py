@@ -32,7 +32,7 @@ class Game:
         self.screen = pygame.display.set_mode((self.realwidth,self.realheight))
         pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0)) # tavaline hiir n'htamatuks
         self.welcomeScreen = pygame.image.load('Pics/gameAvaekraan4.png').convert()
-        self.statboard = pygame.image.load("Pics/statboard.png").convert()
+        self.statboard = pygame.image.load("Pics/statboard3.png").convert()
         self.pauseScreen = pygame.image.load('Pics/paused.png').convert_alpha()
         self.speedpot = pygame.image.load("Pics/speedpot.png").convert_alpha()
         self.hppot2 = pygame.image.load("Pics/2HPpot.png").convert_alpha()
@@ -41,7 +41,7 @@ class Game:
         self.bg_imgRect = self.background.get_rect()
         pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         pygame.mixer.music.load('Sounds/track1_track2.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS
-        #pygame.mixer.music.play(-1)  # maitu korda m'ngib
+        pygame.mixer.music.play(-1)  # maitu korda m'ngib
         self.music_playing = 1
         self.play_sounds = 1
         """
@@ -98,7 +98,9 @@ class Game:
         self.pahad = []
         self.laserid = []
 
-        self.font=pygame.font.Font(None,30)
+        pygame.font.get_fonts()
+        self.font=pygame.font.SysFont('bauhaus93',35)
+
 
         self.level = 1
 
@@ -202,26 +204,26 @@ class Game:
 
     def draw_text(self):
         self.screen.blit(self.statboard, (0,620))
-        scoretext=self.font.render("Level:"+str(self.level), 1,(0,250,0))
-        self.screen.blit(scoretext, (13, 745))
-        scoretext2=self.font.render("Time left:"+str(self.levelTimer.get_secs()), 1,(0,250,0))
-        self.screen.blit(scoretext2, (470, 745))
+        scoretext=self.font.render(str(self.level), 1,(20,250,20))
+        self.screen.blit(scoretext, (471, 639))
+        scoretext2=self.font.render(str(self.levelTimer.get_secs()), 1,(20,250,20))
+        self.screen.blit(scoretext2, (550, 702))
         for i,slot in enumerate(self.mees.relvakogu):
             if(game.mees.relv==slot):
-                self.slotColor = (0,250,0)
+                self.slotColor = (20,200,20)
             else:
                 self.slotColor = (0,0,0)
             self.slots = self.font.render(str(i+1)+" "+str(slot), 1,self.slotColor)
-            self.screen.blit(self.slots, (700+i*100,652))
+            self.screen.blit(self.slots, (700+i*100,642))
         for i,slot in enumerate(self.mees.potikogu):
             if(slot == 0):
-                self.screen.blit(self.hppot2,(200+i*100,710))
+                self.screen.blit(self.hppot2,(200+i*100,707))
             elif(slot == 1):
-                self.screen.blit(self.hppot5,(200+i*100,710))
+                self.screen.blit(self.hppot5,(200+i*100,707))
             elif(slot == 2):
-                self.screen.blit(self.speedpot,(200+i*100,710))
+                self.screen.blit(self.speedpot,(200+i*100,707))
             self.slots = self.font.render(str(i+6), 1,(50,0,0))
-            self.screen.blit(self.slots, (200+i*100,710))
+            self.screen.blit(self.slots, (200+i*100,698))
         if(game.mees.relv != "handgun"):
             bulletsNow = str(self.mees.relvad[self.mees.relv]["bullets"])
             bulletsTotal = str(self.mees.relvad[self.mees.relv]["kokku"])
@@ -229,7 +231,7 @@ class Game:
             bulletsNow = "-"
             bulletsTotal = "-"
 
-        scoretext=self.font.render(bulletsNow+"/"+bulletsTotal, 1,(0,0,0))
+        scoretext=self.font.render(bulletsNow+"/"+bulletsTotal, 1,(20,250,20))
         if(self.mees.lives < 3):
             self.livesColor = (255,0,0)
         elif(self.mees.lives >= 3 and self.mees.lives < 5):
@@ -237,8 +239,8 @@ class Game:
         else:
             self.livesColor = (0,255,0)
         scoretext2=self.font.render(str(self.mees.lives),1,self.livesColor)
-        self.screen.blit(scoretext, (650, self.height+94))
-        self.screen.blit(scoretext2, (200, self.height+35))
+        self.screen.blit(scoretext, (833, self.height+83))
+        self.screen.blit(scoretext2, (175, self.height+21))
 
         #pygame.draw.rect(self.screen,(250,125,125),(0,self.height+10,self.width,self.realheight-self.height))
 
@@ -247,7 +249,7 @@ class Game:
             if(self.bossInit == False):
                 self.del_bloks()
                 self.del_enemies()
-                boss = Enemy(self.enemytype["boss"],True,w=self.level*25,h=self.level*25)
+                boss = Enemy(self.enemytype["boss"],True,w=self.level*100,h=self.level*100)
                 boss.elusi = (self.level*3)
                 self.pahad.append(boss)
                 self.bossInit = True
