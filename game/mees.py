@@ -22,6 +22,10 @@ class Mees(object): # peamees
         self.saund3.set_volume(0.8)
         self.chan3 = pygame.mixer.find_channel()
 
+        self.saund4 = pygame.mixer.Sound("Sounds/slurp.wav")
+        self.saund4.set_volume(1)
+        self.chan4 = pygame.mixer.find_channel()
+
 
         self.lives = 7 # mitu elu mehel
         self.rect = Rect(30,SCREEN_HEIGHT-100,10,10) # ta kast
@@ -139,8 +143,11 @@ class Mees(object): # peamees
             if(self.speed != 0): # kui pole surnud
                 pot = self.potid[self.potikogu[slot]]
                 if "heals" in pot:
+                    self.chan4.queue(self.saund4)
                     self.lives += pot["heals"]
+
                 if "speed" in pot:
+                    self.chan4.queue(self.saund4)
                     self.saiJuurde = pot["speed"]
                     self.speed += self.saiJuurde
                     self.speedTimer.reset_n(pot["time"])

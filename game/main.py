@@ -240,7 +240,7 @@ class Game:
             self.livesColor = (0,255,0)
         scoretext2=self.font.render(str(self.mees.lives),1,self.livesColor)
         self.screen.blit(scoretext, (833, self.height+83))
-        self.screen.blit(scoretext2, (175, self.height+21))
+        self.screen.blit(scoretext2, (175, self.height+19))
 
         #pygame.draw.rect(self.screen,(250,125,125),(0,self.height+10,self.width,self.realheight-self.height))
 
