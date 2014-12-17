@@ -8,6 +8,12 @@ class Laser():
     global SCREEN_WIDTH, SCREEN_HEIGHT
 
     def __init__(self,speed,dmg=2):
+
+        self.LaserSound = pygame.mixer.Sound("Sounds/laser2.wav")
+        self.LaserSound.set_volume(0.8)
+        self.chan1 = pygame.mixer.find_channel()
+
+        
         self.delay = Timer(speed)
         self.wait = Timer(1) # reageerimisaeg
         self.type = random
@@ -27,15 +33,18 @@ class Laser():
         self.wait.update()
     def show(self,scr):
         if(self.delay.end): # kui aeg lasta
+            
 
             if(self.wait.running == False and self.initWait == False): # delay l'bi, k2ivitame laser
                 self.wait.run()
                 self.initWait = True
 
             if(self.wait.end): # laseme
+
                 pygame.draw.rect(scr,self.colorReady,self.rect.get())
                 if(self.dmgTime == 0):
                     self.dmgTime = pygame.time.get_ticks()
+                    self.chan1.queue(self.LaserSound)
                 else:
                     if(pygame.time.get_ticks() -self.dmgTime > 500):
                         self.bye() # aeg t'is, aeg minna
