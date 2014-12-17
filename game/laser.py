@@ -31,7 +31,7 @@ class Laser():
     def update_logic(self):
         self.delay.update()
         self.wait.update()
-    def show(self,scr):
+    def show(self,scr,status):
         if(self.delay.end): # kui aeg lasta
             
 
@@ -44,7 +44,8 @@ class Laser():
                 pygame.draw.rect(scr,self.colorReady,self.rect.get())
                 if(self.dmgTime == 0):
                     self.dmgTime = pygame.time.get_ticks()
-                    self.chan1.queue(self.LaserSound)
+                    if(status == 1):
+                        self.chan1.queue(self.LaserSound)
                 else:
                     if(pygame.time.get_ticks() -self.dmgTime > 500):
                         self.bye() # aeg t'is, aeg minna

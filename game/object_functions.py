@@ -1,5 +1,6 @@
 from variables import *
 import random
+import math
 class Rect:
     """
     oma rect klass et oleks voimalik floate kasutada
@@ -54,3 +55,6 @@ def rect_in_map(rect): # tagastab true kui objekt asub mapis
         return True
     else:
         return False
+
+def calc_len(x1,y1,x2,y2):
+    return (math.sqrt(pow((x2-x1),2)+pow((y2-y1),2)))
