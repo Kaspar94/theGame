@@ -1,8 +1,8 @@
-Kappa Shooter
+theGame
 =======
 
 progra projekt
-![Alt text](/game/Pics/gameAvaekraan4.png?raw=true "pic")
+![Alt text](/game/Pics/gameAvaekraan.png?raw=true "pic")
 
 
 
