@@ -80,8 +80,8 @@ class Mees(object): # peamees
                 },
             2 :
                 {
-                    "speed" : 2,
-                    "time" : 5
+                    "speed" : 1,
+                    "time" : 20
                 }
         }
 
@@ -154,9 +154,8 @@ class Mees(object): # peamees
     def shoot(self,start,end,mouseButton):
         if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0 and self.relvad[self.relv]["kokku"] != -1): # pole kuule?
             return
-
         temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
-        self.chan.queue(self.saund) #############################SOUND
+        self.chan.queue(self.saund) 
         if(self.relv == "pump"): # 2 kuuli lisaks
             temp2 = Bullet(start[0],start[1],end[0]-50,end[1]-50,self.relvad[self.relv])
             temp3 = Bullet(start[0],start[1],end[0]+50,end[1]+50,self.relvad[self.relv])
@@ -260,10 +259,12 @@ class Mees(object): # peamees
                 self.chan3.queue(self.saund3)
                 return True
         elif(item.type=="weapon"):
-            if not (item.value in self.relvakogu):
+            if not (item.value in self.relvakogu): # kui relva pole lisame juurde
                 self.relvakogu.append(item.value)
-                self.chan3.queue(self.saund3)
-                return True
+            else: # lisame kuule
+                self.relvad[item.value]["kokku"] += self.relvad[item.value]["pide"]*5 # anname 5 pide jagu kuule
+            self.chan3.queue(self.saund3)
+            return True
         elif(item.type=="bullets"):
             if (item.weaponType in self.relvakogu):
                 self.relvad[item.weaponType]["kokku"] += item.value

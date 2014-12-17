@@ -21,6 +21,7 @@ class Timer:
         self.paused = -self.paused
     def run(self):
         self.running = True
+        self.reset()
     def reset_n(self,n):
         self.c = n*1000
     def reset(self):
