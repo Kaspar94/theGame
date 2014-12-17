@@ -249,7 +249,7 @@ class Game:
             if(self.bossInit == False):
                 self.del_bloks()
                 self.del_enemies()
-                boss = Enemy(self.enemytype["boss"],True,w=self.level*100,h=self.level*100)
+                boss = Enemy(self.enemytype["boss"],True,w=self.level*25,h=self.level*25)
                 boss.elusi = (self.level*3)
                 self.pahad.append(boss)
                 self.bossInit = True
