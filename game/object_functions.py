@@ -27,12 +27,12 @@ def collision(rect1, rect2): # kontrollib kas kokkuporge
 def collision_circle_rect(Laine,rect):
     circleDistX = abs(Laine.x-rect.x)
     circleDistY = abs(Laine.y-rect.y)
-
-    if(circleDistX > rect.w/2+Laine.r or circleDistY > rect.h/2+Laine.r):
-        return False # raadiuses
-
-    if(circleDistX <= rect.w/2 or circleDistY <= rect.h/2):
+    if(circleDistX <= Laine.r or circleDistY <= Laine.r):
         return True
+
+    #if(circleDistX > rect.w/2+Laine.r or circleDistY > rect.h/2+Laine.r):
+    #    return False # raadiuses mitte
+
 
 def crd_out_y(range): # genereerib suvalise y koordinaadi mapist v2ljas arg. range raadiuses
     global SCREEN_HEIGHT

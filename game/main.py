@@ -147,9 +147,17 @@ class Game:
                 laser.bye()
 
         for laine in self.lained:
-            if not(laine.update_logic()):
-                if(laine in self.lained):
+            if not(laine.update_logic()): # laine joudnud loppu
+                if(laine.type == "lyke"): # kui lykkav laine
+                    if(laine in self.lained): # kaob ara
+                        self.lained.remove(laine)
+                else: # vastasel juhul havitame
+                    for enemy in self.pahad:
+                        if(collision_circle_rect(laine,enemy.rect)):
+                            if(enemy in self.pahad):
+                                self.pahad.remove(enemy)
                     self.lained.remove(laine)
+                    continue
 
             for enemy in self.pahad:
                 if(collision_circle_rect(laine,enemy.rect)):
@@ -162,9 +170,6 @@ class Game:
                             enemy.rect.y -= 50
                         else:
                             enemy.rect.y += 50
-                    else:
-                        if(enemy in self.pahad):
-                            self.pahad.remove(enemy)
 
         for blokk in self.blokid:
 
@@ -188,7 +193,7 @@ class Game:
                     pass
                 self.pahad.remove(enemy) # paha ohverdas kahjuks end :(
 
-        #if(len(self.pahad) <= 10):
+        #if(len(self.pahad) <= 10): # hard mode lels
         #    self.create_enemies(10*self.level)
 
     def update_display(self): # uuendab koike mida naidatakse

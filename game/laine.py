@@ -11,6 +11,7 @@ class Laine():
         self.y = startY
         self.endX = endX
         self.endY = endY
+        self.speed = 2
         if(self.type == "lyke"):
             self.color = (0,0,0)
         else:
@@ -33,11 +34,11 @@ class Laine():
         velX = (tx/dist)
         velY = (ty/dist)
         if(dist > 1):
-            self.x += velX
-            self.y += velY
+            self.x += velX*self.speed
+            self.y += velY*self.speed
             return True
 
     def show(self,screen):
         #circle(Surface, color, pos, radius, width=0) -> Rect
         #if(self.type != "lyke"):
-        pygame.draw.circle(screen,self.color,(int(self.x),int(self.y)),self.r)
+        pygame.draw.circle(screen,self.color,(int(self.x),int(self.y)),self.r,5)
