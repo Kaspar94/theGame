@@ -397,8 +397,8 @@ game = Game(REAL_SCREEN_WIDTH,REAL_SCREEN_HEIGHT,SCREEN_WIDTH, SCREEN_HEIGHT) # 
 game.mees = Mees() # peavend
 
 """ level 1 """
-game.create_bloks(5) # viis vastast
-game.create_enemies(20) # kaks vastast, viisakas
+game.create_bloks(0) # viis vastast
+game.create_enemies(0) # kaks vastast, viisakas
 """         """
 
 
@@ -470,6 +470,7 @@ while game.run == True: # main loop
                     if not ("vahe" in game.mees.relvad[game.mees.relv]): # kui on automaat siis hakkab ise tulistama
                         game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
                     game.mouseHolding = True
+                    game.lained = []
                 elif(pygame.mouse.get_pressed()[2] == 1): # peavend saadab ulti v2lja
                     if(game.mees.laine()):
                         temp = Laine(game.mees.rect.x,game.mees.rect.y,pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1])
