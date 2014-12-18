@@ -40,5 +40,5 @@ class Laine():
 
     def show(self,screen):
         #circle(Surface, color, pos, radius, width=0) -> Rect
-        #if(self.type != "lyke"):
-        pygame.draw.circle(screen,self.color,(int(self.x),int(self.y)),self.r,5)
+        if(self.type != "lyke"):
+            pygame.draw.circle(screen,self.color,(int(self.x),int(self.y)),self.r,5)
