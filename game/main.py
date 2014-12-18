@@ -151,7 +151,7 @@ class Game:
                 if(laine.type == "lyke"): # kui lykkav laine
                     if(laine in self.lained): # kaob ara
                         self.lained.remove(laine)
-                else: # vastasel juhul havitame
+                else: # vastasel juhul havitame ------------------------------< SIIN K@IB PAUK
                     for enemy in self.pahad:
                         if(collision_circle_rect(laine,enemy.rect)):
                             if(enemy in self.pahad):
