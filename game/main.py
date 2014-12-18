@@ -39,6 +39,9 @@ class Game:
         self.hppot2 = pygame.image.load("Pics/2HPpot.png").convert_alpha()
         self.hppot5 = pygame.image.load("Pics/5HPpot.png").convert_alpha()
         self.background = pygame.transform.scale((pygame.image.load("Pics/spacev3.png").convert()), (1024,768))
+        self.MachineGun = pygame.transform.scale((pygame.image.load("Pics/machinegun.png").convert_alpha()), (60,40))
+        self.ShotGun = pygame.transform.scale((pygame.image.load("Pics/shotgun.png").convert_alpha()), (60,40))
+        self.HandGun = pygame.transform.scale((pygame.image.load("Pics/handgun2.png").convert_alpha()), (50,50))
         self.bg_imgRect = self.background.get_rect()
         pygame.mixer.init(frequency=22050, size=-16, channels=2, buffer=4096)
         pygame.mixer.music.load('Sounds/track1_track2.mp3') # <--------------------------------------------------------- SIIN TAUSTAMUSS
@@ -239,12 +242,19 @@ class Game:
         scoretext2=self.font.render(str(self.levelTimer.get_secs()), 1,(20,250,20))
         self.screen.blit(scoretext2, (550, 702))
         for i,slot in enumerate(self.mees.relvakogu):
-            if(game.mees.relv==slot):
-                self.slotColor = (20,200,20)
+            if (slot=="handgun"):
+                self.screen.blit(self.HandGun, (865+i*50,642))
+            elif(slot=="machinegun"):
+                self.screen.blit(self.MachineGun, (865+i*50,642))
+            elif(slot=="pump"):
+                self.screen.blit(self.ShotGun, (865+i*50,642))
+
+            if (game.mees.relv == slot):
+                self.slotColor = (20,250,20)
             else:
                 self.slotColor = (0,0,0)
-            self.slots = self.font.render(str(i+1)+" "+str(slot), 1,self.slotColor)
-            self.screen.blit(self.slots, (700+i*100,642))
+            self.slots = self.font.render(str(i+1), 1,self.slotColor)
+            self.screen.blit(self.slots, (885+i*50,619))
         for i,slot in enumerate(self.mees.potikogu):
             if(slot == 0):
                 self.screen.blit(self.hppot2,(200+i*100,707))
@@ -451,10 +461,12 @@ while game.run == True: # main loop
                     game.mees.saund.set_volume(0.2)
                     game.mees.saund2.set_volume(0.2)
                     game.mees.saund3.set_volume(0.2)
+                    game.mees.saund4.set_volume(0.3)
                 else:
                     game.mees.saund.set_volume(0)
                     game.mees.saund2.set_volume(0)
                     game.mees.saund3.set_volume(0)
+                    game.mees.saund4.set_volume(0)
 
             if not game.gaming: # 2rme vaata teisi evente kui m2ng ei k2i.
                 continue

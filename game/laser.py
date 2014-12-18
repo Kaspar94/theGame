@@ -45,7 +45,7 @@ class Laser():
                 if(self.dmgTime == 0):
                     self.dmgTime = pygame.time.get_ticks()
                     if(status == 1):
-                        self.chan1.queue(self.LaserSound)
+                        self.chan1.play(self.LaserSound)
                 else:
                     if(pygame.time.get_ticks() -self.dmgTime > 500):
                         self.bye() # aeg t'is, aeg minna

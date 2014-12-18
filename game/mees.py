@@ -22,6 +22,10 @@ class Mees(object): # peamees
         self.saund3.set_volume(0.8)
         self.chan3 = pygame.mixer.find_channel()
 
+        self.saund4 = pygame.mixer.Sound("Sounds/slurp.wav")
+        self.saund4.set_volume(1)
+        self.chan4 = pygame.mixer.find_channel()
+
 
         self.lives = 7 # mitu elu mehel
         self.rect = Rect(30,SCREEN_HEIGHT-100,10,10) # ta kast
