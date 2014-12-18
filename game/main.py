@@ -15,6 +15,7 @@ from enemy import Enemy
 from variables import *
 from randomItem import RandomItem
 from laser import Laser
+from laine import Laine
 
 class Game:
     def __init__(self, REALWIDTH, REALHEIGHT, GAMEWIDTH, GAMEHEIGHT):
@@ -100,6 +101,7 @@ class Game:
         self.blokid = []
         self.pahad = []
         self.laserid = []
+        self.lained = []
 
         pygame.font.get_fonts()
         self.font=pygame.font.SysFont('bauhaus93',35)
@@ -147,6 +149,31 @@ class Game:
                 self.mees.getRekt(laser.dmg) # mees saab dmg
                 laser.bye()
 
+        for laine in self.lained:
+            if not(laine.update_logic()): # laine joudnud loppu
+                if(laine.type == "lyke"): # kui lykkav laine
+                    if(laine in self.lained): # kaob ara
+                        self.lained.remove(laine)
+                else: # vastasel juhul havitame ------------------------------< SIIN K@IB PAUK
+                    for enemy in self.pahad:
+                        if(collision_circle_rect(laine,enemy.rect)):
+                            if(enemy in self.pahad):
+                                self.pahad.remove(enemy)
+                    self.lained.remove(laine)
+                    continue
+
+            for enemy in self.pahad:
+                if(collision_circle_rect(laine,enemy.rect)):
+                    if(laine.type == "lyke"):
+                        if(enemy.vector[0] > 0): # kui vastane liigub paremale, lykkame vasakule
+                            enemy.rect.x -= 50
+                        else:
+                            enemy.rect.x += 50
+                        if(enemy.vector[1] > 0):
+                            enemy.rect.y -= 50
+                        else:
+                            enemy.rect.y += 50
+
         for blokk in self.blokid:
 
             blokk.update_logic() # uuendame bloki liikumist
@@ -169,7 +196,7 @@ class Game:
                     pass
                 self.pahad.remove(enemy) # paha ohverdas kahjuks end :(
 
-        #if(len(self.pahad) <= 10):
+        #if(len(self.pahad) <= 10): # hard mode lels
         #    self.create_enemies(10*self.level)
 
     def update_display(self): # uuendab koike mida naidatakse
@@ -186,10 +213,13 @@ class Game:
                 enemy.show(self.screen)
 
             for laser in self.laserid:
-                laser.show(self.screen)
+                laser.show(self.screen,self.play_sounds)
 
             for item in self.randomItems: #joonistame maas olevaid boonus asju
                 item.show(self.screen)
+
+            for laine in self.lained:
+                laine.show(self.screen)
 
             self.draw_text()
 
@@ -252,7 +282,7 @@ class Game:
             self.livesColor = (0,255,0)
         scoretext2=self.font.render(str(self.mees.lives),1,self.livesColor)
         self.screen.blit(scoretext, (833, self.height+83))
-        self.screen.blit(scoretext2, (175, self.height+19))
+        self.screen.blit(scoretext2, (175, self.height+21))
 
         #pygame.draw.rect(self.screen,(250,125,125),(0,self.height+10,self.width,self.realheight-self.height))
 
@@ -261,12 +291,13 @@ class Game:
             if(self.bossInit == False):
                 self.del_bloks()
                 self.del_enemies()
-                boss = Enemy(self.enemytype["boss"],True,w=self.level*100,h=self.level*100)
+                boss = Enemy(self.enemytype["boss"],True,w=self.level*25,h=self.level*25)
                 boss.elusi = (self.level*3)
                 self.pahad.append(boss)
                 self.bossInit = True
                 self.create_lasers(2*self.level)
                 game.mees.speed += 0.2
+                game.mees.ulti += 2 # anname 2 ulti juurde
             else:
                 if(len(self.pahad) == 0):
                     self.bossInit = False
@@ -334,8 +365,6 @@ class Game:
                             try:  # viskab mingi errori non-integer stop for randrange(). Ei oska muudmoodi lahendada :(
                                 miniBoss = Enemy(enemy.type,True,enemy.rect.x+random.randint(0,enemy.rect.w),enemy.rect.y,enemy.rect.w/2,enemy.rect.h/2)
                                 miniBoss2 = Enemy(enemy.type,True,enemy.rect.x+random.randint(0,enemy.rect.w),enemy.rect.y+enemy.rect.h,enemy.rect.w/2,enemy.rect.h/2)
-                                #miniBoss.rect.w,miniBoss.rect.h = enemy.rect.w/2,enemy.rect.h/2
-                                #miniBoss2.rect.w,miniBoss2.rect.h = enemy.rect.w/2,enemy.rect.h/2
                                 miniBoss.elusi,miniBoss2.elusi = (self.level*3),(self.level*3)
                                 if(miniBoss.rect.h > 10): # kontrollime et liiga mini poleks
                                     self.pahad.append(miniBoss)
@@ -442,7 +471,6 @@ while game.run == True: # main loop
                     game.mees.saund3.set_volume(0)
                     game.mees.saund4.set_volume(0)
 
-
             if not game.gaming: # 2rme vaata teisi evente kui m2ng ei k2i.
                 continue
 
@@ -480,6 +508,15 @@ while game.run == True: # main loop
                     if not ("vahe" in game.mees.relvad[game.mees.relv]): # kui on automaat siis hakkab ise tulistama
                         game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
                     game.mouseHolding = True
+                    game.lained = []
+                else: # peavend saadab ulti v2lja
+                    if(game.mees.laine()):
+                        if(pygame.mouse.get_pressed()[1] == 1):
+                            type = "ult"
+                        else:
+                            type = "lyke"
+                        temp = Laine(game.mees.rect.x,game.mees.rect.y,pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1],type)
+                        game.lained.append(temp)
 
         elif evt.type == pygame.MOUSEBUTTONUP:
             if(game.levelTimer.paused == -1):

@@ -13,6 +13,7 @@ class Laser():
         self.LaserSound.set_volume(0.8)
         self.chan1 = pygame.mixer.find_channel()
 
+        
         self.delay = Timer(speed)
         self.wait = Timer(1) # reageerimisaeg
         self.type = random
@@ -30,7 +31,7 @@ class Laser():
     def update_logic(self):
         self.delay.update()
         self.wait.update()
-    def show(self,scr):
+    def show(self,scr,status):
         if(self.delay.end): # kui aeg lasta
             
 
@@ -43,7 +44,8 @@ class Laser():
                 pygame.draw.rect(scr,self.colorReady,self.rect.get())
                 if(self.dmgTime == 0):
                     self.dmgTime = pygame.time.get_ticks()
-                    self.chan1.play(self.LaserSound)
+                    if(status == 1):
+                        self.chan1.play(self.LaserSound)
                 else:
                     if(pygame.time.get_ticks() -self.dmgTime > 500):
                         self.bye() # aeg t'is, aeg minna

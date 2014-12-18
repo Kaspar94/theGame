@@ -1,5 +1,7 @@
 from variables import *
 import random
+import math
+from laine import Laine
 class Rect:
     """
     oma rect klass et oleks voimalik floate kasutada
@@ -21,6 +23,16 @@ def collision(rect1, rect2): # kontrollib kas kokkuporge
         return True
     else:
         return False
+
+def collision_circle_rect(Laine,rect):
+    circleDistX = abs(Laine.x-rect.x)
+    circleDistY = abs(Laine.y-rect.y)
+    if(circleDistX <= Laine.r and circleDistY <= Laine.r):
+        return True
+
+    #if(circleDistX > rect.w/2+Laine.r or circleDistY > rect.h/2+Laine.r):
+    #    return False # raadiuses mitte
+
 
 def crd_out_y(range): # genereerib suvalise y koordinaadi mapist v2ljas arg. range raadiuses
     global SCREEN_HEIGHT
@@ -54,3 +66,6 @@ def rect_in_map(rect): # tagastab true kui objekt asub mapis
         return True
     else:
         return False
+
+def calc_len(x1,y1,x2,y2):
+    return (math.sqrt(pow((x2-x1),2)+pow((y2-y1),2)))

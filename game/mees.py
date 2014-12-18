@@ -9,6 +9,7 @@ class Mees(object): # peamees
     global SCREEN_WIDTH, SCREEN_HEIGHT  # ekraani laius ja pikkus
     def __init__(self):
 
+        #pygame.mixer.init(frequency=22050, size=-16, channels=4)
         self.saund = pygame.mixer.Sound("Sounds/singleshot.wav")
         self.saund.set_volume(0.2)
         self.chan = pygame.mixer.find_channel()
@@ -38,6 +39,7 @@ class Mees(object): # peamees
         self.speed = 0.8 # kiirus
 
         self.bullets = [] # valjalastud kuulid
+
         self.bulletCount = 20 # kuulide arv
         
         self.font=pygame.font.Font(None,30)
@@ -99,6 +101,7 @@ class Mees(object): # peamees
         self.koos = []
         self.saiJuurde = 0
         self.dead = 0
+        self.ulti = 5
     def update_logic(self):
         self.shootTimer.update()
         self.speedTimer.update()
@@ -130,6 +133,7 @@ class Mees(object): # peamees
             bullet.show(scr)
         if (self.dead == 1):
             scr.blit(self.image2,self.image2Rect)
+
     def switchWeapon(self,slot): # vahetab relva
         try:
             self.relv = self.relvakogu[slot]
@@ -144,7 +148,6 @@ class Mees(object): # peamees
                 if "heals" in pot:
                     self.chan4.queue(self.saund4)
                     self.lives += pot["heals"]
-
                 if "speed" in pot:
                     self.chan4.queue(self.saund4)
                     self.saiJuurde = pot["speed"]
@@ -160,8 +163,9 @@ class Mees(object): # peamees
     def shoot(self,start,end,mouseButton):
         if(self.relvad[self.relv]["kokku"] <= 0 and self.relvad[self.relv]["bullets"] <= 0 and self.relvad[self.relv]["kokku"] != -1): # pole kuule?
             return
+
         temp = Bullet(start[0],start[1],end[0],end[1],self.relvad[self.relv])
-        self.chan.queue(self.saund)
+        self.chan.queue(self.saund) 
         if(self.relv == "pump"): # 2 kuuli lisaks
             temp2 = Bullet(start[0],start[1],end[0]-50,end[1]-50,self.relvad[self.relv])
             temp3 = Bullet(start[0],start[1],end[0]+50,end[1]+50,self.relvad[self.relv])
@@ -256,7 +260,6 @@ class Mees(object): # peamees
                         self.getRekt(blokk.dmg) # blokk teeb dmg ka kokkuporkel.
                     else:
                         self.rect.y = blokk.rect.y+blokk.rect.h
-
             self.chan2.queue(self.saund2)
 
     def pickup(self,item):
@@ -277,3 +280,10 @@ class Mees(object): # peamees
                 self.relvad[item.weaponType]["kokku"] += item.value
                 self.chan3.queue(self.saund3)
                 return True
+
+    def laine(self): # pole valmis ..
+        if(self.ulti >= 1):
+            self.ulti -= 1
+            return True
+        else:
+            print ("no ult :(")

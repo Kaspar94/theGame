@@ -45,13 +45,13 @@ class Enemy(object):
         self.distance = (target.rect.x - self.rect.x, target.rect.y - self.rect.y) # they did the math
         self.norm = math.sqrt(self.distance[0] ** 2 + self.distance[1] ** 2)
         self.direction = (self.distance[0] / self.norm, self.distance[1] / self.norm)
-        self.bullet_vector = (self.direction[0] * self.speed, self.direction[1] * self.speed)
+        self.vector = (self.direction[0] * self.speed, self.direction[1] * self.speed)
 
-        self.rect.x += self.bullet_vector[0]
+        self.rect.x += self.vector[0]
         if(self.poiklemine == 1):
-            self.rect.y += self.bullet_vector[1]+math.sin(self.t)/2
+            self.rect.y += self.vector[1]+math.sin(self.t)/2
         else:
-            self.rect.y += self.bullet_vector[1]
+            self.rect.y += self.vector[1]
 
         if(self.shooter): # pahalpoisil on relv!
             self.shootTimer.update() # uuendame tulistamis timerit
