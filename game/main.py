@@ -147,7 +147,24 @@ class Game:
                 laser.bye()
 
         for laine in self.lained:
-            laine.update_logic()
+            if not(laine.update_logic()):
+                if(laine in self.lained):
+                    self.lained.remove(laine)
+
+            for enemy in self.pahad:
+                if(collision_circle_rect(laine,enemy.rect)):
+                    if(laine.type == "lyke"):
+                        if(enemy.vector[0] > 0): # kui vastane liigub paremale, lykkame vasakule
+                            enemy.rect.x -= 50
+                        else:
+                            enemy.rect.x += 50
+                        if(enemy.vector[1] > 0):
+                            enemy.rect.y -= 50
+                        else:
+                            enemy.rect.y += 50
+                    else:
+                        if(enemy in self.pahad):
+                            self.pahad.remove(enemy)
 
         for blokk in self.blokid:
 
@@ -263,6 +280,7 @@ class Game:
                 self.bossInit = True
                 self.create_lasers(2*self.level)
                 game.mees.speed += 0.2
+                game.mees.ulti += 2 # anname 2 ulti juurde
             else:
                 if(len(self.pahad) == 0):
                     self.bossInit = False
@@ -397,8 +415,8 @@ game = Game(REAL_SCREEN_WIDTH,REAL_SCREEN_HEIGHT,SCREEN_WIDTH, SCREEN_HEIGHT) # 
 game.mees = Mees() # peavend
 
 """ level 1 """
-game.create_bloks(0) # viis vastast
-game.create_enemies(0) # kaks vastast, viisakas
+game.create_bloks(5) # viis vastast
+game.create_enemies(20) # kaks vastast, viisakas
 """         """
 
 
@@ -471,9 +489,13 @@ while game.run == True: # main loop
                         game.mees.shoot((game.mees.rect.x,game.mees.rect.y),pygame.mouse.get_pos(),pygame.mouse.get_pressed())
                     game.mouseHolding = True
                     game.lained = []
-                elif(pygame.mouse.get_pressed()[2] == 1): # peavend saadab ulti v2lja
+                else: # peavend saadab ulti v2lja
                     if(game.mees.laine()):
-                        temp = Laine(game.mees.rect.x,game.mees.rect.y,pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1])
+                        if(pygame.mouse.get_pressed()[1] == 1):
+                            type = "ult"
+                        else:
+                            type = "lyke"
+                        temp = Laine(game.mees.rect.x,game.mees.rect.y,pygame.mouse.get_pos()[0],pygame.mouse.get_pos()[1],type)
                         game.lained.append(temp)
 
         elif evt.type == pygame.MOUSEBUTTONUP:

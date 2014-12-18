@@ -97,7 +97,7 @@ class Mees(object): # peamees
         self.koos = []
         self.saiJuurde = 0
         self.dead = 0
-        self.ulti = 1
+        self.ulti = 5
     def update_logic(self):
         self.shootTimer.update()
         self.speedTimer.update()
@@ -276,5 +276,8 @@ class Mees(object): # peamees
                 return True
 
     def laine(self): # pole valmis ..
-        if(self.ulti == 1):
+        if(self.ulti >= 1):
+            self.ulti -= 1
             return True
+        else:
+            print ("no ult :(")
