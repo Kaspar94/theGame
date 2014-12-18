@@ -27,7 +27,7 @@ def collision(rect1, rect2): # kontrollib kas kokkuporge
 def collision_circle_rect(Laine,rect):
     circleDistX = abs(Laine.x-rect.x)
     circleDistY = abs(Laine.y-rect.y)
-    if(circleDistX <= Laine.r or circleDistY <= Laine.r):
+    if(circleDistX <= Laine.r and circleDistY <= Laine.r):
         return True
 
     #if(circleDistX > rect.w/2+Laine.r or circleDistY > rect.h/2+Laine.r):
